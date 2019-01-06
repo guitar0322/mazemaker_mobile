@@ -1,0 +1,19 @@
+{
+  "name": "miro",
+  "version": "1.0.0",
+  "description": "miroTest",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4",
+    "express-mysql-session": "^2.1.0",
+    "express-session": "^1.15.6",
+    "jade": "^1.11.0",
+    "pbkdf2-password": "^1.2.1"
+  },
+  "devDependencies": {}
+}
