@@ -20,7 +20,7 @@ router.get('/',function(req,res){
 })
 
 router.post('/',function(req,res){
-  console.log(req.body);
+  //console.log(req.body);
   var sql = 'select * from user where username = ?';
   conn.query(sql,[req.body.username],function(err,result){
     if(err){
