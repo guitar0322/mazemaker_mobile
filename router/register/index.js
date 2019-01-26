@@ -27,7 +27,10 @@ router.post('/',function(req,res){
       username:req.body.username,
       password:hash,
       salt: salt,
-      nickname:req.body.nickname
+      nickname:req.body.nickname,
+      win:0,
+      loss:0,
+      score:0
     }
     console.log('new_user', new_user);
     conn.query('select id from user where username= ? ',[req.body.username],function(err,result){
@@ -45,16 +48,13 @@ router.post('/',function(req,res){
           throw err;
         }
         if(result.length>0){
-          console.log('nick');
           var msg = {"status":"NICKNAME_ERROR"};
-        //  return res.send(msg);
           return res.json(msg);
         }
         var sql = 'insert into user set ?';
         conn.query(sql, new_user,function(err,result){
             return req.session.save(function(){
               var msg = {"status":"OK"}
-              //res.send(msg);
               res.json(msg);
             });
         })

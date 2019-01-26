@@ -35,11 +35,14 @@ router.post('/',function(req,res){
     var pw = result[0].password;
     var salt =result[0].salt;
     var nickname = result[0].nickname;
+    var win = result[0].win;
+    var loss = result[0].loss;
+    var score = result[0].score;
 
     return hasher({password:req.body.password,salt:salt},
       function(err,pass,salt,hash){
         if(hash===pw){
-          var msg={"status":"OK","nickname":nickname};
+          var msg={"status":"OK",'nickname':nickname, 'win':win, 'loss':loss, 'score':score};
           return res.json(msg);
         }
         else{
