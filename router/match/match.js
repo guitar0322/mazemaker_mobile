@@ -23,6 +23,7 @@ router.post('/',function(req,res){
           conn.query('select * from match_que where flag = 1 and room = ?', room, (err, result) => {
             if(err) throw err;
             else if(result.length === 2) {
+              console.log(result.length);
               var msg = {"complete":"COMPLETE"};
               return res.json(msg);
             }
@@ -57,6 +58,8 @@ router.post('/',function(req,res){
               })
               conn.query('update match_que set flag = 1 where room = ?', result[0].room, (err, result) => {
                 if(err) throw err;
+                var msg = {"complete":"ERROR"};
+                return res.json(msg);
               })
             }
             else {//기존의 비슷한 점수인 애들의 match_que가 존재하는 경우

@@ -1,6 +1,7 @@
 var router = require('express').Router();
 var register = require('./register/index');
 var login = require('./login/index');
+var rank = require('./rank/index');
 var match = require('./match/match');
 var match_complete = require('./match/match_complete');
 var match_cancel = require('./match/match_cancel');
