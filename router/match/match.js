@@ -23,7 +23,6 @@ router.post('/',function(req,res){
           conn.query('select * from match_que where flag = 1 and room = ?', room, (err, result) => {
             if(err) throw err;
             else if(result.length === 2) {
-              console.log(result.length);
               var msg = {"complete":"COMPLETE"};
               return res.json(msg);
             }
