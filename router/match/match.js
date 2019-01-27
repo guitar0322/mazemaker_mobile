@@ -18,15 +18,33 @@ router.post('/',function(req,res){
       }
       conn.query('select * from match_que where nickname = ?', nickname, (err, result) => {
         if(err) throw err;
-        if(result.length===0) {
+        else if(result.length != 0){
+          var room = result[0].room;
+          conn.query('select * from match_que where flag = 1 and room = ?', room, (err, result) => {
+            if(err) throw err;
+            else if(result.length === 2) {
+              var msg = {"complete":"COMPLETE"};
+              return res.json(msg);
+            }
+            else {
+              var msg = {"complete":"ERROR"};
+              return res.json(msg);
+            }
+          })
+        }
+        else if(result.length === 0){
           conn.query('select * from match_que where ABS(TRUNCATE(score/100,0) - ?) = 0 AND flag = 0', Math.floor(score/100, 0), (err, result) => {
             if(err) throw err;
             if(result.length === 0){//기존의 비슷한 점수인 애들의 match_que가 존재하지 않는 경우
               conn.query('insert into match_que set ?', match_user, (err, result) => {
                 if(err) throw err;
+                else {
+                  var msg = {"complete":"ERROR"};
+                  return res.json(msg);
+                }
               })
             }
-            else if(result.length === 7) {//기존의 match_que가 7명 대기중일때
+            else if(result.length === 1) {//기존의 match_que가 7명 대기중일때
               match_user = {
                 id:id,
                 room:result[0].room,
@@ -39,10 +57,6 @@ router.post('/',function(req,res){
               })
               conn.query('update match_que set flag = 1 where room = ?', result[0].room, (err, result) => {
                 if(err) throw err;
-                else {
-                  var msg = {"complete":"COMPLETE"};
-                  return res.json(msg);
-                }
               })
             }
             else {//기존의 비슷한 점수인 애들의 match_que가 존재하는 경우
