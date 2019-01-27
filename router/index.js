@@ -11,5 +11,6 @@ router.use('/register',register);
 router.use('/login',login);
 router.use('/match/cancel', match_cancel);
 router.use('/match/complete', match_complete);
+router.use('/rank', rank);
 
 module.exports = router;
