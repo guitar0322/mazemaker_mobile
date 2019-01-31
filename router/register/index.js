@@ -30,7 +30,8 @@ router.post('/',function(req,res){
       nickname:req.body.nickname,
       win:0,
       loss:0,
-      score:0
+      score:0,
+      ticket:0
     }
     console.log('new_user', new_user);
     conn.query('select id from user where username= ? ',[req.body.username],function(err,result){
