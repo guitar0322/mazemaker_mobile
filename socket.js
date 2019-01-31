@@ -29,16 +29,21 @@ io.on('connection', function(socket) {
 
     var jsonData = JSON.parse(data);
     var roomNum = jsonData.room;
+    var nickname = jsonData.nickname;
+    console.log(nickname);
     socket.join(roomNum);
 
     if(rooms[roomNum]===undefined)
+    {
+      console.log("UNDEFINED");
       rooms[roomNum]={};
+    }
 
     rooms[roomNum][nickname]={};
 
     console.log(rooms);
-    console.log(Object.key(rooms[roomNum]).length);
-    if(Object.key(rooms[roomNum]).length===2)
+    console.log(Object.keys(rooms[roomNum]).length);
+    if(Object.keys(rooms[roomNum]).length===1)
     {
       var map = new Array();
       var wall = new Array();
@@ -68,6 +73,7 @@ io.on('connection', function(socket) {
 
       var msg = {"status":"OK", "wall":wall, "map":map};
       io.sockets.in(roomNum).emit('start',msg);
+      console.log("finish");
     }
   });
 
