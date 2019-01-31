@@ -3,8 +3,8 @@ var conn = require('../../config/db');
 
 var map = new Array();
 var wall = new Array();
-for(var i = 0; i < 18; i++) {
-  wall[i] = new Array(18);
+for(var i = 0; i < 19; i++) {
+  wall[i] = new Array(19);
 }
 var Random = (min, max) => {
   var ranNum = Math.floor(Math.random()*(max-min+1)) + min;
