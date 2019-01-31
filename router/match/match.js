@@ -1,9 +1,11 @@
 var conn = require('../../config/db');
 var router = require('express').Router();
 
+//#flag:0->매치 대기중 #flag:-1->매치 취소 #flag:1->매치 완료
 router.post('/',function(req,res){
   var nickname = req.body.nickname;
   var score = req.body.rankscore;
+
   //#flag:0 -> 대기중  #flag:1 -> 수락대기중  #flag:-1 -> 수락완료
   //일단은 match_que에 있는 애들중에 rankscore가 비슷한애들 있는지 찾아본다
   conn.query('select * from user where nickname = ?', nickname, (err, result) => {
@@ -23,7 +25,7 @@ router.post('/',function(req,res){
           conn.query('select * from match_que where flag = 1 and room = ?', room, (err, result) => {
             if(err) throw err;
             else if(result.length === 2) {
-              var msg = {"complete":"COMPLETE"};
+              var msg = {"complete":"COMPLETE", "result":result};
               return res.json(msg);
             }
             else {
