@@ -26,7 +26,10 @@ router.post('/',function(req,res){
             if(err) throw err;
             else if(result.length === 2) {
               var msg = {"complete":"COMPLETE", "result":result};
-              return res.json(msg);
+              conn.query('delete from match_que where room = ?', result[0].room, (err, result) => {
+                if(err) throw err;
+                return res.json(msg);
+              })
             }
             else {
               var msg = {"complete":"ERROR"};
