@@ -38,12 +38,23 @@ router.post('/',function(req,res){
     var win = result[0].win;
     var loss = result[0].loss;
     var score = result[0].score;
+    var last_date = result[0].last_date;
 
     return hasher({password:req.body.password,salt:salt},
       function(err,pass,salt,hash){
         if(hash===pw){
-          var msg={"status":"OK",'nickname':nickname, 'win':win, 'loss':loss, 'score':score};
-          return res.json(msg);
+          var msg={"status":"OK",'nickname':nickname, 'win':win, 'loss':loss, 'score':score, 'last_date':last_date};
+          var tmp = {
+            last_date:req.body.last_date
+          }
+          var arr = new Array();
+          arr[0] = tmp;
+          arr[1] = user;
+          conn.query('update user set ? where username = ?', arr, (err, result) => {
+            if(err) throw err;
+            console.log(last_date);
+            return res.json(msg);
+          })
         }
         else{
           var msg={"status":"ERROR"};
