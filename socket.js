@@ -20,31 +20,30 @@ var Random = (min, max) => {
 // connection이 수립되면 event handler function의 인자로 socket인 들어온다
 io.on('connection', function(socket) {
   console.log("COnnection");
-  console.log(socket.id);
-  var msg = {'ok':'ok'}
-  //io.emit('check',JSON.stringify(msg));
+  console.log("socket: ", socket.id);
 
   socket.on('start',function(data){
     console.log('origin: ',data);
 
     var jsonData = JSON.parse(data);
     var roomNum = jsonData.room;
-    var nickname = jsonData.nickname;
-    console.log(nickname);
+    var nickname = jsonData.username;
+
     socket.join(roomNum);
 
     if(rooms[roomNum]===undefined)
     {
       console.log("UNDEFINED");
       rooms[roomNum]={};
+      rooms[roomNum]["userlist"]=[];
     }
+    //rooms[roomNum]["userlist"].push(nickname);
+    rooms[roomNum]["userlist"].push({"username": nickname});
 
-    rooms[roomNum][nickname]={};
 
-    console.log(rooms);
-    console.log(Object.keys(rooms[roomNum]).length);
-    if(Object.keys(rooms[roomNum]).length===1)
+    if(Object.keys(rooms[roomNum]["userlist"]).length===2)
     {
+      console.log("userlist: ",rooms[roomNum]["userlist"]);
       var map = new Array();
       var wall = new Array();
       for(var i = 0; i < 19; i++) {
@@ -71,8 +70,16 @@ io.on('connection', function(socket) {
       map[0] = Random(8,25);
       map[1] = Random(0,2);
 
+
+      wall = JSON.stringify(wall);
+
       var msg = {"status":"OK", "wall":wall, "map":map};
       io.sockets.in(roomNum).emit('start',msg);
+
+
+      rooms[roomNum]["userlist"]=[];
+
+      console.log("room: ", rooms);
       console.log("finish");
     }
   });
@@ -83,14 +90,23 @@ io.on('connection', function(socket) {
     var jsonData = JSON.parse(data);
 
     var roomNum = jsonData.room
-    var nickname = jsonData.nickname;
+    var nickname = jsonData.username;
+    console.log("####ROUND_END");
+    console.log(nickname,"가 들어왔습니다");
+    console.log('r: ',rooms);
+    console.log('rn: ',roomNum);
 
-    rooms[roomNum][nickname] = {"score":jsonData.score, "maze":jsonData.maze};
+    //rooms[roomNum]["userlist"].push({"username": nickname};
+    rooms[roomNum]["userlist"].push({"username": nickname, "score":jsonData.score, "maze":jsonData.maze});
 
-    if(Object.keys(rooms[roomNum]).length===2){
-      var roomData= rooms[roomNum];
+
+    if(Object.keys(rooms[roomNum]["userlist"]).length===2){
+      console.log("userlist: ",rooms[roomNum]["userlist"]);
+      //console.log("info: ", rooms[roomNum]["info"]);
+      var roomData= rooms[roomNum]["userlist"];
       var scoreArr = [];
 
+      console.log("round_end: ",roomData);
       /*
       var cnt=0;
       var maze = jsonData.maze;
@@ -98,11 +114,23 @@ io.on('connection', function(socket) {
         wall[cnt++][i%19]=maze[i];
       }
       */
+      var max =-1;
+      var temp =-1;
 
-      for(var i in roomData)
-        scoreArr.push(roomData[i].score);
+      for(var i in roomData){
+        if(max<roomData[i].score)
+        {
+          temp = roomData[i];
+          max = roomData[i].score;
+        }
+        //scoreArr.push(roomData[i].score);
+      }
+      var maze = temp["maze"];
 
-      var max=Math.max(apply(null),scoreArr);
+
+      console.log("arr: ",tmp);
+
+      //var max=Math.max.apply(null,scoreArr);
 
 
       var map = new Array();
@@ -130,21 +158,29 @@ io.on('connection', function(socket) {
       map[0] = Random(8,25);
       map[1] = Random(0,2);
 
-      var msg = {"status":"OK", "info":roomData,"best":max,"wall":wall, "map":map};
+      wall = JSON.stringify(wall);
+
+      for(var i in roomData){
+        console.log("i: ",roomData[i]);
+        delete roomData[i].maze;
+      }
+
+
+      var msg = {"status":"OK", "info":roomData,"best":maze,"wall":wall, "map":map};
       io.sockets.in(roomNum).emit('round_end',msg);
+      console.log("msg: ",msg);
+      rooms[roomNum]["userlist"]=[];
+//      rooms[roomNum]["userlist"]=[];
+      console.log("round_end finish");
     }
 
-
-
-
-    console.log(data);
   });
 
   socket.on('ok',function(data){
 
   });
-
   //접속한 클라이언트의 정보가 수신되면
+
   socket.on('match_giveup',function(data){
     socket.broadcast.emit('match_giveup', data.nickname);
     socket.disconnect();
@@ -193,7 +229,9 @@ io.on('connection', function(socket) {
   })
 
   socket.on('disconnect', function() {
-    console.log('user disconnected: ' + socket.name);
+  //  console.log("force: ", socket);
+    console.log('user disconnected: ' + socket.id);
+    rooms={};
   });
 });
 
