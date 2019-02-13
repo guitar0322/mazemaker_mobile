@@ -12,7 +12,7 @@ module.exports = function(io) {
       for(var i = 0; i < 100000; i++) {
         if(matches[room_idx][i] != undefined) {
           if(matches[room_idx][i][nickname].nickname === nickname && Object.keys(matches[room_idx][i]).length === 1) {
-            delete matches[room_idx][i];
+            delete matches[room_idx];
             socket.disconnect();
             break;
           }
@@ -62,7 +62,7 @@ module.exports = function(io) {
       socket.join(room);
       matches[room_idx][tmp][nickname] = {"nickname":nickname, "rankscore":score, "room":room};
 
-      console.log(matches[room_idx][tmp][nickname]);
+      console.log("match_request : ",matches[room_idx][tmp][nickname]);
 
       if(Object.keys(matches[room_idx][tmp]).length === 2) {
         var matchData = matches[room_idx][tmp];

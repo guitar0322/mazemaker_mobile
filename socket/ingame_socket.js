@@ -18,6 +18,8 @@ module.exports=function(io){
       var roomNum = jsonData.room;
       var nickname = jsonData.username;
 
+      socket.join(roomNum);
+
       if(rooms[roomNum]===undefined)
       {
         console.log("UNDEFINED");
