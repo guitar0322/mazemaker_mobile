@@ -18,8 +18,6 @@ module.exports=function(io){
       var roomNum = jsonData.room;
       var nickname = jsonData.username;
 
-      socket.join(roomNum);
-
       if(rooms[roomNum]===undefined)
       {
         console.log("UNDEFINED");
@@ -80,6 +78,8 @@ module.exports=function(io){
 
       var roomNum = jsonData.room
       var nickname = jsonData.username;
+      var user_cnt = 0;
+
       console.log("####ROUND_END");
       console.log(nickname,"가 들어왔습니다");
       console.log('r: ',rooms);
@@ -87,7 +87,14 @@ module.exports=function(io){
 
       rooms[roomNum]["userlist"].push({"username": nickname, "score":jsonData.score, "maze":jsonData.maze});
 
-      if(Object.keys(rooms[roomNum]["userlist"]).length===2){
+      if(rooms[roomNum]["giveuplist"] === undefined) {
+        user_cnt = Object.keys(rooms[roomNum]["userlist"]).length;
+      }
+      else {
+        user_cnt =Object.keys(rooms[roomNum]["userlist"]).length+Object.keys(rooms[roomNum]["giveuplist"]).length;
+      }
+
+      if(user_cnt===2){
         console.log("userlist: ",rooms[roomNum]["userlist"]);
         //console.log("info: ", rooms[roomNum]["info"]);
         var roomData= rooms[roomNum]["userlist"];
@@ -168,8 +175,16 @@ module.exports=function(io){
     });
     //접속한 클라이언트의 정보가 수신되면
 
-    socket.on('match_giveup',function(data){
-      socket.broadcast.emit('match_giveup', data.nickname);
+    socket.on('giveup',function(data){
+      var jsonData = JSON.parse(data);
+      var nickname = jsonData.username;
+      var roomNum = jsonData.room;
+
+      if(rooms[roomNum]["giveuplist"] === undefined) {
+        rooms[roomNum]["giveuplist"] = [];
+      }
+      rooms[roomNum]["giveuplist"].push({"username": nickname});
+      socket.leave(roomNum);
       socket.disconnect();
     })
     // 접속한 클라이언트의 정보가 수신되면
@@ -208,6 +223,10 @@ module.exports=function(io){
       // 특정 클라이언트에게만 메시지를 전송한다
       // io.to(id).emit('s2c chat', data);
     });
+
+    socket.on('finish', function() {
+        //rooms내 roomNum 초기화
+    })
 
     // force client disconnect from server
     socket.on('forceDisconnect', function() {
