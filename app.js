@@ -3,7 +3,8 @@ var router = require('./router/index');
 
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
-require('./socket/index')(io);
+require('./socket/ingame_socket')(io);
+require('./socket/match_socket')(io);
 app.use(router);
 //app.use('/',register);
 app.listen(8080, function(){
