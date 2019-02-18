@@ -1,8 +1,8 @@
-var bkfd2Password = require("pbkdf2-password");
-var hasher = bkfd2Password();
 var conn = require('../../config/db');
-conn.connect();
 var router = require('express').Router();
+require('date-utils');
+conn.connect();
+
 router.get('/',function(req,res){
   res.send(`
     <html>
@@ -22,45 +22,47 @@ router.get('/',function(req,res){
 router.post('/',function(req,res){
   //console.log('In register');
   //console.log(req.body);
-  hasher({password:req.body.password},function(err,pass,salt,hash){
-    var new_user = {
-      username:req.body.username,
-      password:hash,
-      salt: salt,
-      nickname:req.body.nickname,
-      win:0,
-      loss:0,
-      score:0,
-      ticket:0
-    }
-    console.log('new_user', new_user);
-    conn.query('select id from user where username= ? ',[req.body.username],function(err,result){
-      if(err){
-        throw err;
+  var username = req.body.username;
+  var nickname = req.body.nickname;
+  var sql = 'select * from user where nickname = ?';
+
+  conn.query(sql, nickname, (err, result) => {
+    if(err) throw err;
+
+    if(result.length === 0) {
+      var dt = new Date();
+      var d = dt.toFormat('YYYY-MM-DD HH24:MI:SS');
+
+      var register_info = {
+        username:username,
+        nickname:nickname,
+        win:0,
+        loss:0,
+        score:0,
+        ticket:5,
+        last_date:d,
+        tutorial:0
       }
-      if(result.length>0){
-        console.log('iD');
-        var msg = {"status":"ID_ERROR"};
-        //return res.send(msg);
-        return res.json(msg);
-      }
-      conn.query('select id from user where nickname= ?',[req.body.nickname],function(err,result){
-        if(err){
-          throw err;
-        }
-        if(result.length>0){
-          var msg = {"status":"NICKNAME_ERROR"};
+      conn.query('insert into user set ?', register_info, (err, result) => {
+        if(err) throw err;
+        conn.query(sql, nickname, (err, result) => {
+          if(err) throw err;
+          var win = result[0].win;
+          var lose = result[0].lose;
+          var league = result[0].score;
+          var last_date = result[0].last_date;
+          var ticket = result[0].ticket;
+          var tutorial = result[0].tutorial;
+
+          var msg = {"status":"OK", "win":win, "lose":lose, "league":league, "ticketchangedtime":last_date, "ticket":ticket, "tutorial":tutorial}
           return res.json(msg);
-        }
-        var sql = 'insert into user set ?';
-        conn.query(sql, new_user,function(err,result){
-            return req.session.save(function(){
-              var msg = {"status":"OK"}
-              res.json(msg);
-            });
         })
       })
-    });
+    }
+    else {
+      var msg = {"status":"ERROR"};
+      return res.json(msg);
+    }
   })
 });
 module.exports = router;
