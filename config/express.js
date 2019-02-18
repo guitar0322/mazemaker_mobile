@@ -11,9 +11,9 @@ module.exports = function(){
     saveUninitialized: true,//session을 실제로 사용하기 전까지 세션 발급 X
     store:new MySQLStore({
       host:'localhost',
-      port:3307,
+      port:3306,
       user:'root',
-      password:'111111',
+      password:'1234',
       database:'miro',
       dateStrings: 'date'
     })

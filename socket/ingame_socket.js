@@ -36,8 +36,8 @@ module.exports=function(io){
         var map = new Array();
         var wall = new Array();
         for(var i = 0; i < 19; i++) {
-          wall[i] = new Array(19);
-          for(var j=0;j<19;j++){
+          wall[i] = new Array(17);
+          for(var j=0;j<17;j++){
             wall[i][j]=0;
           }
         }
@@ -45,7 +45,7 @@ module.exports=function(io){
         var tmp = Random(8, 14);
         for(var i = 0; i < tmp; i++) {
           var x = Random(3, 16);
-          var y = Random(1, 16);
+          var y = Random(1, 14);
           //console.log(typeof(x)+x);
           if(wall[x][y] === 1 || wall[x][y+1] === 1 || wall[x-1][y] === 1 || wall[x-1][y+1] === 1) {
             i--;
@@ -132,15 +132,15 @@ module.exports=function(io){
         var map = new Array();
         var wall = new Array();
         for(var i = 0; i < 19; i++) {
-          wall[i] = new Array(19);
-          for(var j=0;j<19;j++){
+          wall[i] = new Array(17);
+          for(var j=0;j<17;j++){
             wall[i][j]=0;
           }
         }
         var tmp = Random(8, 14);
         for(var i = 0; i < tmp; i++) {
           var x = Random(3, 16);
-          var y = Random(1, 16);
+          var y = Random(1, 14);
           //console.log(typeof(x)+x);
           if(wall[x][y] === 1 || wall[x][y+1] === 1 || wall[x-1][y] === 1 || wall[x-1][y+1] === 1) {
             i--;
