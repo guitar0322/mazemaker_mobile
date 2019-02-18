@@ -1,4 +1,7 @@
 module.exports=function(io){
+  var conn = require('../config/db');
+  require('date-utils');
+
   var rooms = {};
 
   var Random = (min, max) => {
@@ -20,6 +23,13 @@ module.exports=function(io){
 
       socket.join(roomNum);
 
+      conn.query('update user set ticket = ticket -1 where nickname = ?', nickname, (err, result) => {
+        if(err) throw err;
+        conn.query('select * from user where nickname = ?', nickname, (err, result) => {
+          if(err) throw err;
+          console.log(result[0]);
+        })
+      })
       if(rooms[roomNum]===undefined)
       {
         console.log("UNDEFINED");

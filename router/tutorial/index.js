@@ -1,6 +1,5 @@
 var conn = require('../../config/db');
 var router = require('express').Router();
-conn.connect();
 
 router.post('/', (req, res) =>{
   var nickname = req.body.nickname;
