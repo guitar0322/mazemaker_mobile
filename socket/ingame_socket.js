@@ -1,6 +1,5 @@
 module.exports=function(io){
   var conn = require('../config/db');
-  require('date-utils');
 
   var rooms = {};
 
