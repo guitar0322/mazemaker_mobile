@@ -36,8 +36,8 @@ module.exports=function(io){
         var map = new Array();
         var wall = new Array();
         for(var i = 0; i < 19; i++) {
-          wall[i] = new Array(19);
-          for(var j=0;j<19;j++){
+          wall[i] = new Array(17);
+          for(var j=0;j<17;j++){
             wall[i][j]=0;
           }
         }
@@ -45,7 +45,7 @@ module.exports=function(io){
         var tmp = Random(8, 14);
         for(var i = 0; i < tmp; i++) {
           var x = Random(3, 16);
-          var y = Random(1, 16);
+          var y = Random(1, 14);
           //console.log(typeof(x)+x);
           if(wall[x][y] === 1 || wall[x][y+1] === 1 || wall[x-1][y] === 1 || wall[x-1][y+1] === 1) {
             i--;
@@ -84,9 +84,10 @@ module.exports=function(io){
 
       console.log("####ROUND_END");
       console.log(nickname,"가 들어왔습니다");
-      console.log('r: ',rooms);
       console.log('rn: ',roomNum);
-
+      if(rooms[roomNum]["userlist"]===undefined){
+          rooms[roomNum]["userlist"]=[];
+      }
       rooms[roomNum]["userlist"].push({"username": nickname, "score":jsonData.score, "maze":jsonData.maze});
 
       if(rooms[roomNum]["giveuplist"] === undefined) {
@@ -103,28 +104,24 @@ module.exports=function(io){
         var scoreArr = [];
 
         console.log("round_end: ",roomData);
-        /*
-        var cnt=0;
-        var maze = jsonData.maze;
-        for(var i in maze){
-          wall[cnt++][i%19]=maze[i];
-        }
-        */
         var max =-1;
-        var temp =-1;
+        var temp ;
 
         for(var i in roomData){
-          if(max<roomData[i].score)
+          console.log("i: ",roomData[i]);
+          //console.log(typeof(roomData[i].score));
+          var num = parseFloat(roomData[i].score);
+          console.log(typeof(num));
+          if(max<num)
           {
+            max = parseFloat(roomData[i].score);
             temp = roomData[i];
-            max = roomData[i].score;
           }
-          //scoreArr.push(roomData[i].score);
         }
         var maze = temp["maze"];
 
 
-        console.log("arr: ",tmp);
+        console.log("maze: ",temp);
 
         //var max=Math.max.apply(null,scoreArr);
 
@@ -132,15 +129,15 @@ module.exports=function(io){
         var map = new Array();
         var wall = new Array();
         for(var i = 0; i < 19; i++) {
-          wall[i] = new Array(19);
-          for(var j=0;j<19;j++){
+          wall[i] = new Array(17);
+          for(var j=0;j<17;j++){
             wall[i][j]=0;
           }
         }
         var tmp = Random(8, 14);
         for(var i = 0; i < tmp; i++) {
           var x = Random(3, 16);
-          var y = Random(1, 16);
+          var y = Random(1, 14);
           //console.log(typeof(x)+x);
           if(wall[x][y] === 1 || wall[x][y+1] === 1 || wall[x-1][y] === 1 || wall[x-1][y+1] === 1) {
             i--;
@@ -157,7 +154,7 @@ module.exports=function(io){
         wall = JSON.stringify(wall);
 
         for(var i in roomData){
-          console.log("i: ",roomData[i]);
+          //console.log("i: ",roomData[i]);
           delete roomData[i].maze;
         }
 
@@ -172,7 +169,12 @@ module.exports=function(io){
 
     });
 
-    socket.on('ok',function(data){
+    socket.on('game_end',function(data){
+      var jsonData = JSON.parse(data);
+      var username = jsonData.username;
+      var roomNum = jsonData.room;
+      var rank = jsonData.result;
+
 
     });
     //접속한 클라이언트의 정보가 수신되면
