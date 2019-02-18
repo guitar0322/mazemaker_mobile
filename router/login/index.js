@@ -40,7 +40,7 @@ router.post('/',function(req,res){
       var tutorial = result[0].tutorial;
       var msg = {"status":"OK", "nickname":nickname, "win":win, "lose":lose, "league":league, "ticketchangedtime":last_date, "ticket":ticket, "tutorial":tutorial}
 
-      return res.jsonI(msg);
+      return res.json(msg);
     }
   });
 });
