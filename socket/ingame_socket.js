@@ -180,11 +180,72 @@ module.exports=function(io){
 
     socket.on('game_end',function(data){
       var jsonData = JSON.parse(data);
-      var username = jsonData.username;
+      var nickname = jsonData.username;
       var roomNum = jsonData.room;
       var rank = jsonData.result;
+      var score = 0;
+      var win = 0;
+      var loss = 0;
 
+      if(rank === 1) {
+        score = 17;
+        win = 1;
+      }
+      else if(rank === 2) {
+        score = 11;
+        win = 1;
+      }
+      else if(rank === 3) {
+        score = -8;
+        loss = 1;
+      }
+      else {
+        score = -13;
+        loss = 1;
+      }
+      var params = [score, nickname];
 
+      conn.query('select * from user where nickname = ?', nickname, (err, result) => {
+        if(err) throw err;
+        var ticket = result[0].ticket;
+        var time = result[0].last_date;
+        var org_score = result[0].score;
+        win = result[0].win + win;
+        loss = result[0].loss + loss;
+
+        if(result[0].score === 0 || (result[0].score + score) <= 0) {
+          conn.query('update user set score = 0, loss = loss+1 where nickname = ?', nickname, (err, result) => {
+            if(err) throw err;
+            score = 0;
+            var msg = {"ticket":ticket, "time":time, "win":win, "loss":loss, "score":score};
+            return res.json(msg);
+          })
+        }
+        else {
+          if(score > 0) {
+            conn.query('update user set score = score + ?, win = win + 1 where nickname = ?', params, (err, result) => {
+              if(err) throw err;
+              score = org_score + score;
+              var msg = {"ticket":ticket, "time":time, "win":win, "loss":loss, "score":score};
+              return res.json(msg);
+            })
+          }
+          else {
+            conn.query('update user set score = score + ?, loss = loss + 1 where nickname = ?', params, (err, result) => {
+              if(err) throw err;
+              score = org_score + score;
+              var msg = {"ticket":ticket, "time":time, "win":win, "loss":loss, "score":score};
+              return res.json(msg);
+            })
+          }
+        }
+      })
+
+      if(rooms[roomNum] != undefined) {
+        delete rooms[roomNum];
+      }
+      socket.leave(roomNum);
+      socket.disconnet();
     });
     //접속한 클라이언트의 정보가 수신되면
 
