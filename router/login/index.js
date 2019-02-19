@@ -39,7 +39,7 @@ router.post('/',function(req,res){
       var ticket = result[0].ticket;
       var tutorial = result[0].tutorial;
       var msg = {"status":"OK", "nickname":nickname, "win":win, "loss":loss, "league":league, "ticketchangedtime":last_date, "ticket":ticket, "tutorial":tutorial}
-
+      console.log(msg);
       return res.json(msg);
     }
   });

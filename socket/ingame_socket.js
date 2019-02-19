@@ -1,6 +1,5 @@
+var conn = require('../config/db');
 module.exports=function(io){
-  var conn = require('../config/db');
-
   var rooms = {};
 
   var Random = (min, max) => {
@@ -21,8 +20,8 @@ module.exports=function(io){
       var nickname = jsonData.nickname;
 
       socket.join(roomNum);
-
-      conn.query('update user set ticket = ticket -1 where nickname = ?', nickname, (err, result) => {
+      console.log("test",nickname);
+      conn.query('update user set ticket = ticket-1 where nickname = ?', nickname, (err, result) => {
         if(err) throw err;
         conn.query('select * from user where nickname = ?', nickname, (err, result) => {
           if(err) throw err;
@@ -222,7 +221,7 @@ module.exports=function(io){
           })
         }
         else {
-          if(score > 0) {
+         if(score > 0) {
             conn.query('update user set score = score + ?, win = win + 1 where nickname = ?', params, (err, result) => {
               if(err) throw err;
               score = org_score + score;

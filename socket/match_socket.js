@@ -41,10 +41,12 @@ module.exports = function(io) {
       }
       else {
         for(var i = 0; i < 100000; i++) {
-          if(Object.keys(matches[room_idx][tmp]).length === 1) {
-            tmp = i;
-            flag = 1;
-            break;
+          if(matches[room_idx][i] != undefined) {
+            if(Object.keys(matches[room_idx][tmp]).length === 1) {
+              tmp = i;
+              flag = 1;
+              break;
+            }
           }
         }
         if(flag === 0) {
