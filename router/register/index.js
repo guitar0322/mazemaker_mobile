@@ -48,13 +48,13 @@ router.post('/',function(req,res){
         conn.query(sql, nickname, (err, result) => {
           if(err) throw err;
           var win = result[0].win;
-          var lose = result[0].lose;
+          var loss = result[0].loss;
           var league = result[0].score;
           var last_date = result[0].last_date;
           var ticket = result[0].ticket;
           var tutorial = result[0].tutorial;
 
-          var msg = {"status":"OK", "win":win, "lose":lose, "league":league, "ticketchangedtime":last_date, "ticket":ticket, "tutorial":tutorial}
+          var msg = {"status":"OK", "win":win, "loss":loss, "league":league, "ticketchangedtime":last_date, "ticket":ticket, "tutorial":tutorial}
           return res.json(msg);
         })
       })
