@@ -4,7 +4,7 @@ module.exports = function(io) {
   io.on('connection', function(socket) {
     socket.on('cancel', function(data){
       var jsonData = JSON.parse(data);
-      var nickname = jsonData.username;
+      var nickname = jsonData.nickname;
       var score = jsonData.rankscore;
       var room_idx = Math.floor(score/100, 0);
 
@@ -27,13 +27,13 @@ module.exports = function(io) {
 
     socket.on('match', function(data){
       var jsonData = JSON.parse(data);
-      var nickname = jsonData.username;
+      var nickname = jsonData.nickname;
       var score = jsonData.rankscore;
       var room_idx = Math.floor(score/100, 0);
       var tmp = 0;
       var room = 0;
       var flag = 0;
-      //console.log(nickname, score);
+      console.log(nickname, score);
       if(matches[room_idx] === undefined) {
         matches[room_idx] = {};
         matches[room_idx][tmp] = {};

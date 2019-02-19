@@ -18,7 +18,7 @@ module.exports=function(io){
 
       var jsonData = JSON.parse(data);
       var roomNum = jsonData.room;
-      var nickname = jsonData.username;
+      var nickname = jsonData.nickname;
 
       socket.join(roomNum);
 
@@ -36,7 +36,7 @@ module.exports=function(io){
         rooms[roomNum]["userlist"]=[];
       }
       //rooms[roomNum]["userlist"].push(nickname);
-      rooms[roomNum]["userlist"].push({"username": nickname});
+      rooms[roomNum]["userlist"].push({"nickname": nickname});
 
 
       if(Object.keys(rooms[roomNum]["userlist"]).length===2)
@@ -88,7 +88,7 @@ module.exports=function(io){
       var jsonData = JSON.parse(data);
 
       var roomNum = jsonData.room
-      var nickname = jsonData.username;
+      var nickname = jsonData.nickname;
       var user_cnt = 0;
 
       console.log("####ROUND_END");
@@ -97,7 +97,7 @@ module.exports=function(io){
       if(rooms[roomNum]["userlist"]===undefined){
           rooms[roomNum]["userlist"]=[];
       }
-      rooms[roomNum]["userlist"].push({"username": nickname, "score":jsonData.score, "maze":jsonData.maze});
+      rooms[roomNum]["userlist"].push({"nickname": nickname, "score":jsonData.score, "maze":jsonData.maze});
 
       if(rooms[roomNum]["giveuplist"] === undefined) {
         user_cnt = Object.keys(rooms[roomNum]["userlist"]).length;
@@ -180,7 +180,7 @@ module.exports=function(io){
 
     socket.on('game_end',function(data){
       var jsonData = JSON.parse(data);
-      var nickname = jsonData.username;
+      var nickname = jsonData.nickname;
       var roomNum = jsonData.room;
       var rank = jsonData.result;
       var score = 0;
@@ -251,13 +251,13 @@ module.exports=function(io){
 
     socket.on('giveup',function(data){
       var jsonData = JSON.parse(data);
-      var nickname = jsonData.username;
+      var nickname = jsonData.nickname;
       var roomNum = jsonData.room;
 
       if(rooms[roomNum]["giveuplist"] === undefined) {
         rooms[roomNum]["giveuplist"] = [];
       }
-      rooms[roomNum]["giveuplist"].push({"username": nickname});
+      rooms[roomNum]["giveuplist"].push({"nickname": nickname});
       socket.leave(roomNum);
       socket.disconnect();
     })
