@@ -2,9 +2,9 @@ var conn = require('../../config/db');
 var router = require('express').Router();
 require('date-utils');
 
-router.get('/', (req, res) =>{
-  var ticket = req.query.ticket;
-  var nickname = req.query.nickname;
+router.post('/', (req, res) =>{
+  var ticket = req.body.ticket;
+  var nickname = req.body.nickname;
   console.log(ticket);
   if(ticket >= 5) {
     console.log('ticket input');
