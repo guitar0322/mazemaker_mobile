@@ -63,7 +63,8 @@ module.exports = function(io) {
       room = tmp*100+room_idx;
       socket.join(room);
       matches[room_idx][tmp][nickname] = {"nickname":nickname, "rankscore":score, "room":room};
-
+      var match_request_msg = {"match_request":"COMPLETE"};
+      io.sockets.in(room).emit('match_request', match_request_msg);
       console.log("match_request : ",matches[room_idx][tmp][nickname]);
 
       if(Object.keys(matches[room_idx][tmp]).length === 2) {
