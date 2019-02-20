@@ -2,6 +2,7 @@ module.exports = function(io) {
   var matches = {};
 
   io.on('connection', function(socket) {
+  //  console.log('match_socket: ',socket.id);
     socket.on('cancel', function(data){
       var jsonData = JSON.parse(data);
       var nickname = jsonData.nickname;
@@ -93,10 +94,6 @@ module.exports = function(io) {
             //3-2-1 디비상에 추가
             //3-2-2 해당 클라 소켓에 추가
             //3-2-3 소켓에 있는 클라들에게 error 송신
-    });
-
-    socket.on('disconnect', function() {
-      console.log('user disconnected: ' + socket.name);
     });
 
   });
