@@ -3,22 +3,33 @@ module.exports = function(io) {
 
   io.on('connection', function(socket) {
     socket.on('cancel', function(data){
+      var cancel_request_msg = {"cancel_request":"CANCEl"};
       var jsonData = JSON.parse(data);
       var nickname = jsonData.nickname;
       var score = jsonData.rankscore;
       var room_idx = Math.floor(score/100, 0);
+      var msg = {"complete":"COMPLETE", "info":"ERROR"};
 
       console.log(nickname, score);
-      for(var i = 0; i < 100000; i++) {
+      for(var i = 0; i < 10000; i++) {
         if(matches[room_idx][i] != undefined) {
+          console.log('cancel_test',nickname ,matches[room_idx][i][nickname]);
           if(matches[room_idx][i][nickname].nickname === nickname && Object.keys(matches[room_idx][i]).length === 1) {
-            delete matches[room_idx];
-            socket.disconnect();
+            delete matches[room_idx][i];
+            var roomNum = i*100+room_idx;
+            io.sockets.in(roomNum).emit('match_complete', msg);
+            io.sockets.in(roomNum).emit('cancel_request', cancel_request_msg);
+            console.log(cancel_request_msg);
+            //socket.disconnect();
             break;
           }
           else if(matches[room_idx][i][nickname].nickname === nickname && Object.keys(matches[room_idx][i]).length === 2) {
             delete matches[room_idx][i][nickname];
-            socket.disconnect();
+            var roomNum = i*100+room_idx;
+            io.sockets.in(roomNum).emit('match_complete', msg);
+            io.sockets.in(roomNum).emit('cancel_request', cancel_request_msg);
+            console.log(cancel_request_msg);
+            //socket.disconnect();
             break;
           }
         }
@@ -26,6 +37,8 @@ module.exports = function(io) {
     })
 
     socket.on('match', function(data){
+      var socket_nickname = {};
+      var socket_id = socket.id;
       var match_request_msg = {"match_request":"COMPLETE"};
       var jsonData = JSON.parse(data);
       var nickname = jsonData.nickname;
@@ -41,7 +54,7 @@ module.exports = function(io) {
         matches[room_idx][tmp][nickname] = {};
       }
       else {
-        for(var i = 0; i < 100000; i++) {
+        for(var i = 0; i < 10000; i++) {
           if(matches[room_idx][i] != undefined) {
             if(Object.keys(matches[room_idx][tmp]).length === 1) {
               tmp = i;
@@ -51,7 +64,7 @@ module.exports = function(io) {
           }
         }
         if(flag === 0) {
-          for(var i = 0; i < 100000; i++) {
+          for(var i = 0; i < 10000; i++) {
             if(matches[room_idx][i] === undefined) {
               tmp = i;
               matches[room_idx][tmp] = {};
@@ -63,15 +76,17 @@ module.exports = function(io) {
       }
       room = tmp*100+room_idx;
       socket.join(room);
-      matches[room_idx][tmp][nickname] = {"nickname":nickname, "rankscore":score, "room":room};
+      matches[room_idx][tmp][nickname] = {"nickname":nickname, "rankscore":score, "room":room, "socket_id":socket_id};
 
       io.sockets.in(room).emit('match_request', match_request_msg);
-      console.log("match_request : ",matches[room_idx][tmp][nickname]);
+
+      console.log("match_request : ",matches[room_idx][tmp][nickname], room, Object.keys(matches[room_idx][tmp]).length);
 
       if(Object.keys(matches[room_idx][tmp]).length === 2) {
         var matchData = matches[room_idx][tmp];
         var msg = {"complete":"COMPLETE", "info":matchData};
-        io.sockets.in(room).emit('match', msg);
+        io.sockets.in(room).emit('match_complete', msg);
+        socket.disconnet();
         delete matches[room_idx][tmp];
       }
       /*matches[idx][nickname] = {"nickname":nickname, "rankscore":score, "room":idx};
@@ -96,7 +111,17 @@ module.exports = function(io) {
     });
 
     socket.on('disconnect', function() {
-      console.log('user disconnected: ' + socket.name);
+      console.log('user disconnected: ' + socket.id);
+      //disconnect if match_complete
+      //disconnect if forced
+      /*for(var i = 0; i <= 30; i++) {
+        if(matches[i] != undefined) {
+          for(var j = 0; j <= 10000; j++) {
+            if(matches[i][j] != undefined && matches[i][j][]) {
+            }
+          }
+        }
+      }*/
     });
 
   });
