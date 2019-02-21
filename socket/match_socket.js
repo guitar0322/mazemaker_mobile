@@ -1,5 +1,6 @@
 module.exports = function(io) {
   var matches = {};
+  var socket_nick = {};
 
   io.on('connection', function(socket) {
   //  console.log('match_socket: ',socket.id);
@@ -12,9 +13,15 @@ module.exports = function(io) {
       var msg = {"complete":"COMPLETE", "info":"ERROR"};
 
       console.log(nickname, score);
+
+      if(socket_nick[socket.id] != undefined)
+        delete socket_nick[socket.id];
+
       for(var i = 0; i < 10000; i++) {
         if(matches[room_idx][i] != undefined) {
+
           console.log('cancel_test',nickname ,matches[room_idx][i][nickname]);
+
           if(matches[room_idx][i][nickname].nickname === nickname && Object.keys(matches[room_idx][i]).length === 1) {
             delete matches[room_idx][i];
             var roomNum = i*100+room_idx;
@@ -24,7 +31,7 @@ module.exports = function(io) {
             //socket.disconnect();
             break;
           }
-          else if(matches[room_idx][i][nickname].nickname === nickname && Object.keys(matches[room_idx][i]).length === 2) {
+          else if(matches[room_idx][i][nickname].nickname === nickname && Object.keys(matches[room_idx][i]).length > 1) {
             delete matches[room_idx][i][nickname];
             var roomNum = i*100+room_idx;
             io.sockets.in(roomNum).emit('match_complete', msg);
@@ -48,7 +55,9 @@ module.exports = function(io) {
       var tmp = 0;
       var room = 0;
       var flag = 0;
+
       console.log(nickname, score);
+
       if(matches[room_idx] === undefined) {
         matches[room_idx] = {};
         matches[room_idx][tmp] = {};
@@ -75,9 +84,12 @@ module.exports = function(io) {
         }
         matches[room_idx][tmp][nickname] = {};
       }
-      room = tmp*100+room_idx;
-      socket.join(room);
+      room = tmp*100+room_idx; // 방번호 계산부분
+      socket.join(room); //클라 해당 방번호에 join
+
       matches[room_idx][tmp][nickname] = {"nickname":nickname, "rankscore":score, "room":room, "socket_id":socket_id};
+      socket_nick[socket.id] = {};
+      socket_nick[socket.id] = {"nickname":nickname};
 
       io.sockets.in(room).emit('match_request', match_request_msg);
 
@@ -87,8 +99,9 @@ module.exports = function(io) {
         var matchData = matches[room_idx][tmp];
         var msg = {"complete":"COMPLETE", "info":matchData};
         io.sockets.in(room).emit('match_complete', msg);
-        socket.disconnet();
+        delete socket_nick[socket.id];
         delete matches[room_idx][tmp];
+        socket.disconnet();
       }
       /*matches[idx][nickname] = {"nickname":nickname, "rankscore":score, "room":idx};
 
@@ -113,16 +126,29 @@ module.exports = function(io) {
 
     socket.on('disconnect', function() {
       console.log('user disconnected: ' + socket.id);
-      //disconnect if match_complete
-      //disconnect if forced
-      /*for(var i = 0; i <= 30; i++) {
-        if(matches[i] != undefined) {
-          for(var j = 0; j <= 10000; j++) {
-            if(matches[i][j] != undefined && matches[i][j][]) {
+      var flag = 0;
+      if(socket_nick[socket.id] != undefined) {
+        var nickname = socket_nick[socket.id].nickname;
+        for(var i = 0; i < 30; i++) {
+          if(matches[i] != undefined) {
+            for(var j = 0; j < 10000; j++) {
+              if(matches[i][j] != undefined && matches[i][j][nickname] != undefined && matches[i][j][nickname].nickname === nickname) {
+                if(Object.keys(matches[i][j]).length === 1) {
+                  delete matches[i][j];
+                  break;
+                }
+                else if(Object.keys(matches[i][j]).length > 1) {
+                  delete matches[i][j][nickname];
+                  break;
+                }
+                flag = 1;
+              }
             }
           }
+          if(flag == 1)
+            break;
         }
-      }*/
+      }
     });
   });
 }
