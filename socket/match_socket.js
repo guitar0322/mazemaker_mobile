@@ -2,6 +2,7 @@ module.exports = function(io) {
   var matches = {};
 
   io.on('connection', function(socket) {
+  //  console.log('match_socket: ',socket.id);
     socket.on('cancel', function(data){
       var cancel_request_msg = {"cancel_request":"CANCEl"};
       var jsonData = JSON.parse(data);
@@ -123,6 +124,5 @@ module.exports = function(io) {
         }
       }*/
     });
-
   });
 }
