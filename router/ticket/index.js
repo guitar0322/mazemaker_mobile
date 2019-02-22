@@ -5,9 +5,9 @@ require('date-utils');
 router.post('/', (req, res) =>{
   var ticket = req.body.ticket;
   var nickname = req.body.nickname;
-  console.log(ticket);
+
   if(ticket >= 5) {
-    console.log('ticket input');
+    console.log('ticket input : ',ticket,nickname);
     var dt = new Date();
     var d = dt.toFormat('YYYY-MM-DD HH24:MI:SS');
     var params = [d, ticket, nickname];

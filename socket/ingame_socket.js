@@ -9,7 +9,7 @@ module.exports=function(io){
   // connection event handler
   // connection이 수립되면 event handler function의 인자로 socket인 들어온다
   io.on('connection', function(socket) {
-    console.log("ingame_socket: ", socket.id);
+  //  console.log("ingame_socket: ", socket.id);
 
     socket.on('start',function(data){
       console.log('origin: ',data);
@@ -275,17 +275,17 @@ module.exports=function(io){
 
     socket.on('disconnect', function() {
     //  console.log("force: ", socket);
-      console.log('user disconnected: ' + socket.id);
+    //  console.log('user disconnected: ' + socket.id);
       for(var i in rooms){
         var socketJson = rooms[i]["socketID"];
         if(socketJson[socket.id]!=undefined){
-          console.log("deleteID: ",rooms[i]["socketID"][socket.id]);
+      //    console.log("deleteID: ",rooms[i]["socketID"][socket.id]);
           if(rooms[i]["giveuplist"]===undefined){
             rooms[i]["giveuplist"]=[];
           }
           rooms[i]["giveuplist"].push({"nickname":rooms[i]["socketID"][socket.id]})
             delete rooms[i]["socketID"][socket.id];
-            console.log("view room: ",rooms[i]);
+        //    console.log("view room: ",rooms[i]);
         }
       }
 
