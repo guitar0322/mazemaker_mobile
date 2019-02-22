@@ -98,10 +98,11 @@ module.exports = function(io) {
       if(Object.keys(matches[room_idx][tmp]).length === 2) {
         var matchData = matches[room_idx][tmp];
         var msg = {"complete":"COMPLETE", "info":matchData};
+        console.log('match_complete : ', msg);
         io.sockets.in(room).emit('match_complete', msg);
         delete socket_nick[socket.id];
         delete matches[room_idx][tmp];
-        socket.disconnet();
+        socket.disconnect();
       }
       /*matches[idx][nickname] = {"nickname":nickname, "rankscore":score, "room":idx};
 
@@ -125,7 +126,8 @@ module.exports = function(io) {
     });
 
     socket.on('disconnect', function() {
-      console.log('user disconnected: ' + socket.id);
+      //console.log('user disconnected: ' + socket.id);
+      console.log('match_disconnected : ',socket_nick[socket.id]);
       var flag = 0;
       if(socket_nick[socket.id] != undefined) {
         var nickname = socket_nick[socket.id].nickname;
@@ -133,12 +135,17 @@ module.exports = function(io) {
           if(matches[i] != undefined) {
             for(var j = 0; j < 10000; j++) {
               if(matches[i][j] != undefined && matches[i][j][nickname] != undefined && matches[i][j][nickname].nickname === nickname) {
+                console.log("before delete match_que : ", matches[i][j]);
                 if(Object.keys(matches[i][j]).length === 1) {
                   delete matches[i][j];
+                  delete socket_nick[socket.id];
+                  console.log("after delete match_que : ", matches[i][j]);
                   break;
                 }
                 else if(Object.keys(matches[i][j]).length > 1) {
+                  delete socket_nick[socket.id];
                   delete matches[i][j][nickname];
+                  console.log("after delete match_que : ", matches[i][j]);
                   break;
                 }
                 flag = 1;
@@ -149,6 +156,7 @@ module.exports = function(io) {
             break;
         }
       }
+      console.log("match_disconnect complete",socket_nick[socket.id]);
     });
   });
 }
