@@ -129,6 +129,7 @@ module.exports = function(io) {
       var flag = 0;
       if(socket_nick[socket.id] != undefined) {
         var nickname = socket_nick[socket.id].nickname;
+        delete socket_nick[socket.id];
         for(var i = 0; i < 30; i++) {
           if(matches[i] != undefined) {
             for(var j = 0; j < 10000; j++) {
