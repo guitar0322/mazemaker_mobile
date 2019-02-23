@@ -263,9 +263,32 @@ module.exports=function(io){
         rooms[roomNum]["giveuplist"] = [];
       }
       rooms[roomNum]["giveuplist"].push({"nickname": nickname});
-      socket.leave(roomNum);
+      conn.query('select * from user where nickname = ?', nickname, (err, result) => {
+        if(err) throw err;
+        var win = result[0].win;
+        var loss = result[0].loss + 1;
+        var score = result[0].score;
+        var ticket = result[0].ticket;
+        var ticketchangedtime = result[0].last_date;
 
-      socket.disconnect();
+        if(score - 13 <= 0){
+          score = 0;
+          var params = [loss, score, nickname];
+        }else {
+          score -= 13;
+          var params = [loss, score, nickname];
+        }
+
+        conn.query('update user set loss = ?, score = ? where nickname = ?', params, (err, result) => {
+          if(err) throw err;
+          var msg = {"win":win, "loss":loss, "score":score, "ticket":ticket, "ticketchangedtime":ticketchangedtime};
+
+          socket.emit('giveup', msg);
+          socket.leave(roomNum);
+          socket.disconnect();
+        })
+      })
+
       console.log('finish-giveup');
     })
 
