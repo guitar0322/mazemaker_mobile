@@ -177,7 +177,6 @@ module.exports=function(io){
     });
 
     socket.on('game_end',function(data){
-      console.log('game_end');
       var jsonData = JSON.parse(data);
       var nickname = jsonData.nickname;
       var roomNum = jsonData.room;
@@ -186,6 +185,7 @@ module.exports=function(io){
       var win = 0;
       var loss = 0;
 
+      console.log('game_end : ', rank);
       if(rank === 1) {
         score = 17;
         win = 1;
@@ -209,14 +209,13 @@ module.exports=function(io){
         var ticket = result[0].ticket;
         var time = result[0].last_date;
         var org_score = result[0].score;
-        win = result[0].win + win;
-        loss = result[0].loss + loss;
+        win += result[0].win;
+        loss += result[0].loss;
 
-        if(result[0].score === 0 && (result[0].score + score) <= 0) {
+        if((org_score + score) <= 0) {
           conn.query('update user set score = 0, loss = loss+1 where nickname = ?', nickname, (err, result) => {
             if(err) throw err;
-            score = 0;
-            var msg = {"ticket":ticket, "time":time, "win":win, "loss":loss, "score":score};
+            var msg = {"ticket":ticket, "time":time, "win":win, "loss":loss, "score":0};
             socket.emit('game_end',msg);
             //io.sockets.in(roomNum).emit('game_end',msg);
             //return res.json(msg);
@@ -226,7 +225,7 @@ module.exports=function(io){
          if(score > 0) {
             conn.query('update user set score = score + ?, win = win + 1 where nickname = ?', params, (err, result) => {
               if(err) throw err;
-              score = org_score + score;
+              score += org_score;
               var msg = {"ticket":ticket, "time":time, "win":win, "loss":loss, "score":score};
               socket.emit('game_end',msg);
               //return res.json(msg);
@@ -235,7 +234,7 @@ module.exports=function(io){
           else {
             conn.query('update user set score = score + ?, loss = loss + 1 where nickname = ?', params, (err, result) => {
               if(err) throw err;
-              score = org_score + score;
+              score += org_score;
               var msg = {"ticket":ticket, "time":time, "win":win, "loss":loss, "score":score};
               socket.emit('game_end',msg);
               //return res.json(msg);
