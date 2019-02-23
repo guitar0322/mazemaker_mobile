@@ -88,10 +88,10 @@ module.exports = function(io) {
       socket.join(room); //클라 해당 방번호에 join
 
       matches[room_idx][tmp][nickname] = {"nickname":nickname, "rankscore":score, "room":room, "socket_id":socket_id};
-      socket_nick[socket.id] = {};
-      socket_nick[socket.id] = {"nickname":nickname};
+      socket_nick[socket_id] = {};
+      socket_nick[socket_id] = {"nickname":nickname};
 
-      io.to(socket.id).emit('match_request', match_request_msg);
+      io.to(socket_id).emit('match_request', match_request_msg);
 
       console.log("match_request : ",matches[room_idx][tmp][nickname], room, Object.keys(matches[room_idx][tmp]).length);
 
@@ -100,7 +100,7 @@ module.exports = function(io) {
         var msg = {"complete":"COMPLETE", "info":matchData};
         console.log('match_complete : ', msg);
         io.sockets.in(room).emit('match_complete', msg);
-        delete socket_nick[socket.id];
+        delete socket_nick[socket_id];
         delete matches[room_idx][tmp];
         socket.disconnect();
       }
