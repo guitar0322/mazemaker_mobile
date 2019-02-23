@@ -25,9 +25,7 @@ module.exports=function(io){
 
       conn.query('update user set ticket = ticket-1 where nickname = ?', nickname, (err, result) => {
         if(err) throw err;
-        conn.query('select * from user where nickname = ?', nickname, (err, result) => {
-          if(err) throw err;
-        })
+        //ticket discount coding
       });
 
       if(rooms[roomNum]===undefined)

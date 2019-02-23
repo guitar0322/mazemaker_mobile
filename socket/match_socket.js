@@ -91,7 +91,7 @@ module.exports = function(io) {
       socket_nick[socket.id] = {};
       socket_nick[socket.id] = {"nickname":nickname};
 
-      io.sockets.in(room).emit('match_request', match_request_msg);
+      io.to(socket.id).emit('match_request', match_request_msg);
 
       console.log("match_request : ",matches[room_idx][tmp][nickname], room, Object.keys(matches[room_idx][tmp]).length);
 
