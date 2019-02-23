@@ -186,15 +186,15 @@ module.exports=function(io){
       var loss = 0;
 
       console.log('game_end : ', rank);
-      if(rank === 1) {
+      if(rank == 1) {
         score = 17;
         win = 1;
       }
-      else if(rank === 2) {
+      else if(rank == 2) {
         score = 11;
         win = 1;
       }
-      else if(rank === 3) {
+      else if(rank == 3) {
         score = -8;
         loss = 1;
       }
@@ -211,7 +211,7 @@ module.exports=function(io){
         var org_score = result[0].score;
         win += result[0].win;
         loss += result[0].loss;
-
+        console.log('game_end testing : ', nickname, org_score, score, win, loss);
         if((org_score + score) <= 0) {
           conn.query('update user set score = 0, loss = loss+1 where nickname = ?', nickname, (err, result) => {
             if(err) throw err;
