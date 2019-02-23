@@ -304,11 +304,28 @@ module.exports=function(io){
             rooms[i]["giveuplist"]=[];
           }
           rooms[i]["giveuplist"].push({"nickname":rooms[i]["socketID"][socket.id]})
-            delete rooms[i]["socketID"][socket.id];
+          var nickname = rooms[i]["socketID"][socket.id];
+          conn.query('select * from user where nickname = ?', nickname, (err, result) => {
+            if(err) throw err;
+            var loss = result[0].loss + 1;
+            var score = result[0].score;
+
+            if(score - 13 <= 0){
+              score = 0;
+              var params = [loss, score, nickname];
+            }else {
+              score -= 13;
+              var params = [loss, score, nickname];
+            }
+
+            conn.query('update user set loss = ?, score = ? where nickname = ?', params, (err, result) => {
+              if(err) throw err;
+              delete rooms[i]["socketID"][socket.id];
+            })
+          })
         //    console.log("view room: ",rooms[i]);
         }
       }
-
     });
   });
 }
