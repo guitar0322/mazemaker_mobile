@@ -281,7 +281,7 @@ module.exports=function(io){
 
         conn.query('update user set loss = ?, score = ? where nickname = ?', params, (err, result) => {
           if(err) throw err;
-          var msg = {"win":win, "loss":loss, "score":score, "ticket":ticket, "ticketchangedtime":ticketchangedtime};
+          var msg = {"win":win, "loss":loss, "score":score, "ticket":ticket, "time":ticketchangedtime};
 
           socket.emit('giveup', msg);
           socket.leave(roomNum);
