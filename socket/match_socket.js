@@ -60,6 +60,7 @@ module.exports = function(io) {
           io.sockets.in(room).emit('match_complete', msg);
           delete socket_nick[socket_id];
           delete matches[room_idx][room_idx2];
+        }
     })
 
     socket.on('cancel', function(data){
