@@ -5,14 +5,15 @@ module.exports = function(io) {
   io.on('connection', function(socket) {
   //  console.log('match_socket: ',socket.id);
 
-    socket.in('match_over', function(data){
+    socket.on('match_over', function(data){
         //해당 클라의 matches에 접근(여기서 필요한거 방번호랑 닉네임)
         //생길 수 있는 문제점 : 점수가 100점 미만인 클라의 경우 계속 같은 하위 큐를 탐색, 점수가 2900점 초과하는 클라의 경우 계속 같은 상위 큐를 탐색
 
         console.log('match_over : ', socket_nick[socket.id]);
         var nickname = socket_nick[socket.id].nickname;
         var room = socket_nick[socket.id].room;
-        var room_idx = room % 100, room_idx2 = room / 100;;
+        var room_idx = room % 100, room_idx2 = Math.floor(room / 100, 0);
+        console.log(room_idx, room_idx2);
         var score = matches[room_idx][room_idx2][nickname].rankscore;
         var tmp1 = 0, tmp2 = 0;
 
@@ -51,14 +52,22 @@ module.exports = function(io) {
         }
         room = room_idx2*100+room_idx;
         socket.join(room);
-        matches[room_idx][room_idx2][nickname] = {"nickname":nickname, "rankscore":score, "room":room, "socket_id":socket_id};
-
+        if(matches[room_idx] === undefined) {
+          matches[room_idx] = {};
+          matches[room_idx][room_idx2] = {};
+        }
+        if(matches[room_idx][room_idx2] === undefined) {
+          matches[room_idx][room_idx2] = {};
+        }
+        matches[room_idx][room_idx2][nickname] = {};
+        matches[room_idx][room_idx2][nickname] = {"nickname":nickname, "rankscore":score, "room":room, "socket_id":socket.id};
+        console.log('match_over : ', matches[room_idx][room_idx2], room_idx, room_idx2);
         if(Object.keys(matches[room_idx][room_idx2]).length === 2) {
           var matchData = matches[room_idx][room_idx2];
           var msg = {"complete":"COMPLETE", "info":matchData};
           console.log('match_complete : ', msg);
           io.sockets.in(room).emit('match_complete', msg);
-          delete socket_nick[socket_id];
+          delete socket_nick[socket.id];
           delete matches[room_idx][room_idx2];
         }
     })
@@ -79,7 +88,7 @@ module.exports = function(io) {
       for(var i = 0; i < 10000; i++) {
         if(matches[room_idx][i] != undefined) {
 
-          console.log('cancel_test',nickname ,matches[room_idx][i][nickname]);
+          console.log('cancel_test',nickname ,matches[room_idx][i][nickname], room_idx, i);
 
           if(matches[room_idx][i][nickname].nickname === nickname && Object.keys(matches[room_idx][i]).length === 1) {
             delete matches[room_idx][i];
@@ -153,7 +162,7 @@ module.exports = function(io) {
 
       io.to(socket_id).emit('match_request', match_request_msg);
 
-      console.log("match_request : ",matches[room_idx][tmp][nickname], room, Object.keys(matches[room_idx][tmp]).length);
+      console.log("match_request : ",matches[room_idx][tmp][nickname], room, tmp);
 
       if(Object.keys(matches[room_idx][tmp]).length === 2) {
         var matchData = matches[room_idx][tmp];
