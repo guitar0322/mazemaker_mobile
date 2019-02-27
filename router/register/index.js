@@ -20,8 +20,8 @@ router.get('/',function(req,res){
     `);
 })
 router.post('/',function(req,res){
-  //process.stdout.write('In register');
-  //process.stdout.write(req.body);
+  //console.log('In register');
+  //console.log(req.body);
   var username = req.body.username;
   var nickname = req.body.nickname;
   var sql = 'select * from user where nickname = ?';

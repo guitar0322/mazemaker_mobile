@@ -8,11 +8,11 @@ module.exports=function(app){
   app.use(passport.session()); //passport에서 세션을쓰겠다.
 
   passport.serializeUser(functione(user,done){
-    process.stdout.write('serializeUser',user);
+    console.log('serializeUser',user);
     done(null,user);
   });
   passport.deserializeUser(function(id,done){
-    process.stdout.write('deserializeUser',id);
+    console.log('deserializeUser',id);
     var sql =
   })
   passport.use(new LocalStrategy(
