@@ -263,9 +263,7 @@ module.exports=function(io){
         rooms[roomNum]["giveuplist"] = [];
       }
       rooms[roomNum]["giveuplist"].push({"nickname": nickname});
-
-      var socketJson = rooms[i]["socketID"];
-
+      
       if(rooms[roomNum]["socketID"][socket.id]!=undefined)
         delete rooms[roomNum]["socketID"][socket.id];
 
