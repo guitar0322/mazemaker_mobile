@@ -21,8 +21,8 @@ from user order by score;`;
       return res.json(msg);
     }
 
-    console.log(result);
-    console.log(result[0]);
+    console.log("in rank : ",result +'\n');
+    console.log("in rank : ",result[0] +'\n');
     var top=[];
     for(var i in result)
       top.push({"nickname":result[i].nickname,"rankscore":result[i].score});
