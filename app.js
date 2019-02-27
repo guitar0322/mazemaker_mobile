@@ -10,8 +10,8 @@ require('./socket/match_socket')(io);
 app.use(router);
 //app.use('/',register);
 app.listen(8080, function(){
-  console.log('Connected 8080 port!' +'\n');
+  console.log('Connected 8080 port!');
 });
 server.listen(8088, function() {
-  console.log('Socket IO server listening on port 8088' +'\n');
+  console.log('Socket IO server listening on port 8088');
 });

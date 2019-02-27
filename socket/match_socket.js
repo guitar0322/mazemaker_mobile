@@ -9,7 +9,7 @@ module.exports = function(io) {
         //해당 클라의 matches에 접근(여기서 필요한거 방번호랑 닉네임)
         //생길 수 있는 문제점 : 점수가 100점 미만인 클라의 경우 계속 같은 하위 큐를 탐색, 점수가 2900점 초과하는 클라의 경우 계속 같은 상위 큐를 탐색
 
-        //console.log('match_over : ', socket_nick[socket.id] +'\n');
+        //console.log('match_over : ', socket_nick[socket.id]);
         var nickname = socket_nick[socket.id].nickname;
         var room = socket_nick[socket.id].room;
         var room_idx = room % 100, room_idx2 = Math.floor(room / 100, 0);
@@ -60,11 +60,11 @@ module.exports = function(io) {
         }
         matches[room_idx][room_idx2][nickname] = {};
         matches[room_idx][room_idx2][nickname] = {"nickname":nickname, "rankscore":score, "room":room, "socket_id":socket.id};
-      //  console.log('match_over : ', matches[room_idx][room_idx2], room_idx, room_idx2 +'\n');
+      //  console.log('match_over : ', matches[room_idx][room_idx2], room_idx, room_idx2);
         if(Object.keys(matches[room_idx][room_idx2]).length === 4) {
           var matchData = matches[room_idx][room_idx2];
           var msg = {"complete":"COMPLETE", "info":matchData};
-        //  console.log('match_complete : ', msg +'\n');
+        //  console.log('match_complete : ', msg);
           io.sockets.in(room).emit('match_complete', msg);
           delete socket_nick[socket.id];
           delete matches[room_idx][room_idx2];
@@ -79,7 +79,7 @@ module.exports = function(io) {
       var room_idx = Math.floor(score/100, 0);
       var msg = {"complete":"COMPLETE", "info":"ERROR"};
 
-    //  console.log("match_cancel : ",nickname, score +'\n');
+    //  console.log("match_cancel : ",nickname, score);
 
       if(socket_nick[socket.id] != undefined)
         delete socket_nick[socket.id];
@@ -87,7 +87,7 @@ module.exports = function(io) {
       for(var i = 0; i < 10000; i++) {
         if(matches[room_idx][i] != undefined) {
 
-        //  console.log('cancel_test',nickname ,matches[room_idx][i][nickname], room_idx, i +'\n');
+        //  console.log('cancel_test',nickname ,matches[room_idx][i][nickname], room_idx, i);
 
           if(matches[room_idx][i][nickname].nickname === nickname && Object.keys(matches[room_idx][i]).length === 1) {
             delete matches[room_idx][i];
@@ -95,7 +95,7 @@ module.exports = function(io) {
             io.sockets.in(roomNum).emit('match_complete', msg);
             io.sockets.in(roomNum).emit('cancel_request', cancel_request_msg);
             socket.leave(roomNum);
-          //  console.log("cancel_request_msg : ",cancel_request_msg +'\n');
+          //  console.log("cancel_request_msg : ",cancel_request_msg);
             //socket.disconnect();
             break;
           }
@@ -105,7 +105,7 @@ module.exports = function(io) {
             io.sockets.in(roomNum).emit('match_complete', msg);
             io.sockets.in(roomNum).emit('cancel_request', cancel_request_msg);
             socket.leave(roomNum);
-        //    console.log("cancel_request_msg", cancel_request_msg +'\n');
+        //    console.log("cancel_request_msg", cancel_request_msg);
             //socket.disconnect();
             break;
           }
@@ -124,7 +124,7 @@ module.exports = function(io) {
       var room = 0;
       var flag = 0;
 
-  //    console.log("match_start : ", nickname, score +'\n');
+  //    console.log("match_start : ", nickname, score);
 
       if(matches[room_idx] === undefined) {
         matches[room_idx] = {};
@@ -161,12 +161,12 @@ module.exports = function(io) {
 
       io.to(socket_id).emit('match_request', match_request_msg);
 
-      console.log("match_request_msg : ",matches[room_idx][tmp][nickname], room, tmp +'\n');
+      console.log("match_request_msg : ",matches[room_idx][tmp][nickname], room, tmp);
 
       if(Object.keys(matches[room_idx][tmp]).length === 4) {
         var matchData = matches[room_idx][tmp];
         var msg = {"complete":"COMPLETE", "info":matchData};
-    //    console.log('match_complete : ', msg +'\n');
+    //    console.log('match_complete : ', msg);
         io.sockets.in(room).emit('match_complete', msg);
         delete socket_nick[socket_id];
         delete matches[room_idx][tmp];

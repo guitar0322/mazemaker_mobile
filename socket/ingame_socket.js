@@ -12,7 +12,7 @@ module.exports=function(io){
   //  console.log("ingame_socket: ", socket.id);
 
     socket.on('start',function(data){
-      console.log('origin: ',data +'\n');
+      console.log('origin: ',data);
 
       var jsonData = JSON.parse(data);
       var roomNum = jsonData.room;
@@ -30,7 +30,7 @@ module.exports=function(io){
 
       if(rooms[roomNum]===undefined)
       {
-        console.log("UNDEFINED" +'\n');
+        console.log("UNDEFINED");
         rooms[roomNum]={};
         rooms[roomNum]["userlist"]=[];
         rooms[roomNum]["socketID"]={};
@@ -76,8 +76,8 @@ module.exports=function(io){
 
         rooms[roomNum]["userlist"]=[];
 
-        console.log("room: ", rooms +'\n');
-        console.log("finish" +'\n');
+        console.log("room: ", rooms);
+        console.log("finish");
       }
     });
 
@@ -90,9 +90,9 @@ module.exports=function(io){
       var nickname = jsonData.nickname;
       var user_cnt = 0;
 
-      console.log("####ROUND_END" +'\n');
-      console.log(nickname,"가 들어왔습니다" +'\n');
-      console.log('rn: ',rooms +'\n');
+      console.log("####ROUND_END");
+      console.log(nickname,"가 들어왔습니다");
+      console.log('rn: ',rooms);
 
       if(rooms[roomNum]["userlist"]===undefined){
           rooms[roomNum]["userlist"]=[];
@@ -110,7 +110,7 @@ module.exports=function(io){
         //console.log("info: ", rooms[roomNum]["info"]);
         var roomData= rooms[roomNum]["userlist"];
 
-        console.log("round_end: ",roomData +'\n');
+        console.log("round_end: ",roomData);
         var max =-1;
         var temp ;
 
@@ -168,10 +168,10 @@ module.exports=function(io){
 
         var msg = {"status":"OK", "info":roomData,"best":maze,"wall":wall, "map":map};
         io.sockets.in(roomNum).emit('round_end',msg);
-        console.log("msg: ",msg +'\n');
+        console.log("msg: ",msg);
         rooms[roomNum]["userlist"]=[];
   //      rooms[roomNum]["userlist"]=[];
-        console.log("round_end finish" +'\n');
+        console.log("round_end finish");
       }
 
     });
@@ -185,7 +185,7 @@ module.exports=function(io){
       var win = 0;
       var loss = 0;
 
-      console.log('game_end : ', rank +'\n');
+      console.log('game_end : ', rank);
       if(rank == 1) {
         score = 17;
         win = 1;
@@ -211,7 +211,7 @@ module.exports=function(io){
         var org_score = result[0].score;
         win += result[0].win;
         loss += result[0].loss;
-        console.log('game_end testing : ', nickname, org_score, score, win, loss +'\n');
+        console.log('game_end testing : ', nickname, org_score, score, win, loss);
         if((org_score + score) <= 0) {
           conn.query('update user set score = 0, loss = loss+1 where nickname = ?', nickname, (err, result) => {
             if(err) throw err;
@@ -247,14 +247,14 @@ module.exports=function(io){
         delete rooms[roomNum];
       }
       socket.leave(roomNum);
-      console.log('call disconnect' +'\n');
+      console.log('call disconnect');
       socket.disconnect();
-      console.log('game_end finish' +'\n');
+      console.log('game_end finish');
     });
     //접속한 클라이언트의 정보가 수신되면
 
     socket.on('giveup',function(data){
-      console.log("give-up" +'\n')
+      console.log("give-up")
       var jsonData = JSON.parse(data);
       var nickname = jsonData.nickname;
       var roomNum = jsonData.room;
@@ -295,7 +295,7 @@ module.exports=function(io){
         })
       })
 
-      console.log('finish-giveup' +'\n');
+      console.log('finish-giveup');
     })
 
 

@@ -20,7 +20,7 @@ router.get('/',function(req,res){
 })
 
 router.post('/',function(req,res){
-  //console.log(req.body);
+  console.log(req.body);
   var sql = 'select * from user where username = ?';
   conn.query(sql,[req.body.username],function(err,result){
     if(err){
@@ -28,6 +28,7 @@ router.post('/',function(req,res){
     }
     if(result.length===0){
       var msg = {"status":"FIRST"};
+      console.log(msg, req.body.username);
       return res.json(msg);
     }
     else {
@@ -39,7 +40,7 @@ router.post('/',function(req,res){
       var ticket = result[0].ticket;
       var tutorial = result[0].tutorial;
       var msg = {"status":"OK", "nickname":nickname, "win":win, "loss":loss, "league":league, "ticketchangedtime":last_date, "ticket":ticket, "tutorial":tutorial}
-      console.log(msg +'\n');
+      console.log(msg);
       return res.json(msg);
     }
   });
