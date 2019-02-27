@@ -20,7 +20,7 @@ router.get('/',function(req,res){
 })
 
 router.post('/',function(req,res){
-  //console.log(req.body);
+  //process.stdout.write(req.body);
   var sql = 'select * from user where username = ?';
   conn.query(sql,[req.body.username],function(err,result){
     if(err){
@@ -39,7 +39,7 @@ router.post('/',function(req,res){
       var ticket = result[0].ticket;
       var tutorial = result[0].tutorial;
       var msg = {"status":"OK", "nickname":nickname, "win":win, "loss":loss, "league":league, "ticketchangedtime":last_date, "ticket":ticket, "tutorial":tutorial}
-      console.log(msg);
+      process.stdout.write(msg);
       return res.json(msg);
     }
   });

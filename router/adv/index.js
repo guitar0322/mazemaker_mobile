@@ -4,7 +4,7 @@ require('date-utils');
 
 router.post('/', (req, res) =>{
   var nickname = req.body.nickname;
-  console.log('advertisement : ', nickname);
+  process.stdout.write('advertisement : ', nickname);
   conn.query('select * from user where nickname = ?', nickname, (err, result) => {
     if(err) throw err;
     if(result[0].ticket >=4) {
