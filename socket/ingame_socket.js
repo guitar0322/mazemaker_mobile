@@ -39,7 +39,7 @@ module.exports=function(io){
       rooms[roomNum]["userlist"].push({"nickname": nickname});
       rooms[roomNum]["socketID"][socket.id]=nickname;
 
-      if(Object.keys(rooms[roomNum]["userlist"]).length===2)
+      if(Object.keys(rooms[roomNum]["userlist"]).length===4)
       {
         var map = new Array();
         var wall = new Array();
@@ -106,7 +106,7 @@ module.exports=function(io){
         user_cnt =Object.keys(rooms[roomNum]["userlist"]).length+Object.keys(rooms[roomNum]["giveuplist"]).length;
       }
 
-      if(user_cnt===2){
+      if(user_cnt===4){
         //process.stdout.write("info: ", rooms[roomNum]["info"]);
         var roomData= rooms[roomNum]["userlist"];
 

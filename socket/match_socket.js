@@ -61,7 +61,7 @@ module.exports = function(io) {
         matches[room_idx][room_idx2][nickname] = {};
         matches[room_idx][room_idx2][nickname] = {"nickname":nickname, "rankscore":score, "room":room, "socket_id":socket.id};
         process.stdout.write('match_over : ', matches[room_idx][room_idx2], room_idx, room_idx2 +'\n');
-        if(Object.keys(matches[room_idx][room_idx2]).length === 2) {
+        if(Object.keys(matches[room_idx][room_idx2]).length === 4) {
           var matchData = matches[room_idx][room_idx2];
           var msg = {"complete":"COMPLETE", "info":matchData};
           process.stdout.write('match_complete : ', msg +'\n');
@@ -134,7 +134,7 @@ module.exports = function(io) {
       else {
         for(var i = 0; i < 10000; i++) {
           if(matches[room_idx][i] != undefined) {
-            if(Object.keys(matches[room_idx][tmp]).length === 1) {
+            if(Object.keys(matches[room_idx][tmp]).length >= 1) {
               tmp = i;
               flag = 1;
               break;
@@ -163,7 +163,7 @@ module.exports = function(io) {
 
       process.stdout.write("match_request_msg : ",matches[room_idx][tmp][nickname], room, tmp +'\n');
 
-      if(Object.keys(matches[room_idx][tmp]).length === 2) {
+      if(Object.keys(matches[room_idx][tmp]).length === 4) {
         var matchData = matches[room_idx][tmp];
         var msg = {"complete":"COMPLETE", "info":matchData};
         process.stdout.write('match_complete : ', msg +'\n');
