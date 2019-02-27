@@ -92,8 +92,8 @@ module.exports = function(io) {
           if(matches[room_idx][i][nickname].nickname === nickname && Object.keys(matches[room_idx][i]).length === 1) {
             delete matches[room_idx][i];
             var roomNum = i*100+room_idx;
-            io.sockets.in(roomNum).emit('match_complete', msg);
-            io.sockets.in(roomNum).emit('cancel_request', cancel_request_msg);
+            io.to(socket.id).emit('match_complete', msg);
+            io.to(socket.id).emit('cancel_request', cancel_request_msg);
             socket.leave(roomNum);
           //  console.log("cancel_request_msg : ",cancel_request_msg);
             //socket.disconnect();
@@ -102,8 +102,8 @@ module.exports = function(io) {
           else if(matches[room_idx][i][nickname].nickname === nickname && Object.keys(matches[room_idx][i]).length > 1) {
             delete matches[room_idx][i][nickname];
             var roomNum = i*100+room_idx;
-            io.sockets.in(roomNum).emit('match_complete', msg);
-            io.sockets.in(roomNum).emit('cancel_request', cancel_request_msg);
+            io.to(socket.id).emit('match_complete', msg);
+            io.to(socket.id).emit('cancel_request', cancel_request_msg);
             socket.leave(roomNum);
         //    console.log("cancel_request_msg", cancel_request_msg);
             //socket.disconnect();
