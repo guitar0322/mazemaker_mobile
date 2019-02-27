@@ -7,7 +7,7 @@ router.post('/', (req, res) =>{
   var nickname = req.body.nickname;
 
   if(ticket >= 5) {
-    process.stdout.write('ticket input : ',ticket,nickname);
+    process.stdout.write('ticket input : ',ticket,nickname +'\n');
     var dt = new Date();
     var d = dt.toFormat('YYYY-MM-DD HH24:MI:SS');
     var params = [d, ticket, nickname];
