@@ -263,6 +263,12 @@ module.exports=function(io){
         rooms[roomNum]["giveuplist"] = [];
       }
       rooms[roomNum]["giveuplist"].push({"nickname": nickname});
+
+      var socketJson = rooms[i]["socketID"];
+
+      if(rooms[roomNum]["socketID"][socket.id]!=undefined)
+        delete rooms[roomNum]["socketID"][socket.id];
+
       conn.query('select * from user where nickname = ?', nickname, (err, result) => {
         if(err) throw err;
         var win = result[0].win;
@@ -296,6 +302,8 @@ module.exports=function(io){
     socket.on('disconnect', function() {
     //  console.log("force: ", socket);
     //  console.log('user disconnected: ' + socket.id);
+
+    //강제종료가 됬을때만 ...
       for(var i in rooms){
         var socketJson = rooms[i]["socketID"];
         if(socketJson[socket.id]!=undefined){
@@ -320,6 +328,7 @@ module.exports=function(io){
 
             conn.query('update user set loss = ?, score = ? where nickname = ?', params, (err, result) => {
               if(err) throw err;
+              socket.leave(i);
               delete rooms[i]["socketID"][socket.id];
             })
           })
