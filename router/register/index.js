@@ -2,26 +2,9 @@ var conn = require('../../config/db');
 var router = require('express').Router();
 require('date-utils');
 conn.connect();
-
-router.get('/',function(req,res){
-  res.send(`
-    <html>
-      <head>
-      </head>
-      <body>
-      <form method="post" action="/register">
-      <input type="text" name = "username"/><br>
-      <input type="text" name = "password"/><br>
-      <input type="text" name="nickname"/><br>
-      <input type="submit"/>
-      </form>
-      </body>
-    </html>
-    `);
-})
+conn.on('error', function() {});
 router.post('/',function(req,res){
-  //console.log('In register');
-  //console.log(req.body);
+  console.log('In register : ', req.body);
   var username = req.body.username;
   var nickname = req.body.nickname;
   var sql = 'select * from user where nickname = ?';
@@ -38,7 +21,7 @@ router.post('/',function(req,res){
         nickname:nickname,
         win:0,
         loss:0,
-        score:0,
+        score:1000,
         ticket:5,
         last_date:d,
         tutorial:0

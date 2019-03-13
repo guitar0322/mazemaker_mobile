@@ -1,24 +1,9 @@
 var bkfd2Password = require("pbkdf2-password");
 var hasher = bkfd2Password();
-var conn = require('../../config/db');
 var router = require('express').Router();
-
-router.get('/',function(req,res){
-  res.send(`
-    <html>
-      <head>
-      </head>
-      <body>
-      <form method="post" action="/login">
-      <input type="text" name = "username"/><br>
-      <input type="text" name = "password"/><br>
-      <input type="submit"/>
-      </form>
-      </body>
-    </html>
-    `);
-})
-
+var conn = require('../../config/db')
+conn.connect();
+conn.on('error', function() {});
 router.post('/',function(req,res){
   console.log(req.body);
   var sql = 'select * from user where username = ?';

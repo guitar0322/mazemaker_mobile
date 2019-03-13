@@ -8,6 +8,10 @@ router.post('/', (req, res) =>{
     if(err) throw err;
     conn.query('update user set tutorial = 1 where nickname = ?', nickname, (err, result) => {
       if(err) throw err;
+      
+      var msg = {"status":"COMPLETE"};
+      console.log("turorial conplete : ", msg);
+      return res.json(msg);
     })
   })
 })

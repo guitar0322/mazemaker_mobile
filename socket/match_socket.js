@@ -1,4 +1,4 @@
-module.exports = function(io) {
+module.exports = function(io,conn) {
   var matches = {};
   var socket_nick = {};
 
@@ -163,7 +163,7 @@ module.exports = function(io) {
 
       console.log("match_request_msg : ",matches[room_idx][tmp][nickname], room, tmp);
 
-      if(Object.keys(matches[room_idx][tmp]).length === 4) {
+      if(Object.keys(matches[room_idx][tmp]).length === 2) {
         var matchData = matches[room_idx][tmp];
         var msg = {"complete":"COMPLETE", "info":matchData};
     //    console.log('match_complete : ', msg);
