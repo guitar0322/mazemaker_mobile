@@ -51,6 +51,7 @@ module.exports = function(io,conn) {
         }
         room = room_idx2*100+room_idx;
         socket.join(room);
+        socket_nick[socket.id].room = room;
         if(matches[room_idx] === undefined) {
           matches[room_idx] = {};
           matches[room_idx][room_idx2] = {};
@@ -73,10 +74,11 @@ module.exports = function(io,conn) {
 
     socket.on('cancel', function(data){
       var cancel_request_msg = {"cancel_request":"CANCEl"};
+      var roomNum = socket_nick[socket.id].room;
       var jsonData = JSON.parse(data);
       var nickname = jsonData.nickname;
       var score = jsonData.rankscore;
-      var room_idx = Math.floor(score/100, 0);
+      var room_idx = roomNum % 100, room_idx2 = Math.floor(roomNum / 100, 0);
       var msg = {"complete":"COMPLETE", "info":"ERROR"};
 
     //  console.log("match_cancel : ",nickname, score);
@@ -84,37 +86,24 @@ module.exports = function(io,conn) {
       if(socket_nick[socket.id] != undefined)
         delete socket_nick[socket.id];
 
-      for(var i = 0; i < 10000; i++) {
-        if(matches[room_idx][i] != undefined) {
-
-        //  console.log('cancel_test',nickname ,matches[room_idx][i][nickname], room_idx, i);
-
-          if(matches[room_idx][i][nickname].nickname === nickname && Object.keys(matches[room_idx][i]).length === 1) {
-            delete matches[room_idx][i];
-            var roomNum = i*100+room_idx;
-            io.to(socket.id).emit('match_complete', msg);
-            io.to(socket.id).emit('cancel_request', cancel_request_msg);
-            socket.leave(roomNum);
-          //  console.log("cancel_request_msg : ",cancel_request_msg);
-            //socket.disconnect();
-            break;
-          }
-          else if(matches[room_idx][i][nickname].nickname === nickname && Object.keys(matches[room_idx][i]).length > 1) {
-            delete matches[room_idx][i][nickname];
-            var roomNum = i*100+room_idx;
-            io.to(socket.id).emit('match_complete', msg);
-            io.to(socket.id).emit('cancel_request', cancel_request_msg);
-            socket.leave(roomNum);
-        //    console.log("cancel_request_msg", cancel_request_msg);
-            //socket.disconnect();
-            break;
-          }
-        }
+      if(matches[room_idx][room_idx2][nickname].nickname === nickname && Object.keys(matches[room_idx][room_idx2]).length === 1) {
+        delete matches[room_idx][room_idx2];
+        io.to(socket.id).emit('match_complete', msg);
+        io.to(socket.id).emit('cancel_request', cancel_request_msg);
+        socket.leave(roomNum);
+        //  console.log("cancel_request_msg : ",cancel_request_msg);
+        //socket.disconnect();
+      }
+      else if(matches[room_idx][room_idx2][nickname].nickname === nickname && Object.keys(matches[room_idx][room_idx2]).length > 1) {
+        delete matches[room_idx][room_idx2][nickname];
+        io.to(socket.id).emit('match_complete', msg);
+        io.to(socket.id).emit('cancel_request', cancel_request_msg);
+        socket.leave(roomNum);      //    console.log("cancel_request_msg", cancel_request_msg);
+        //socket.disconnect();
       }
     })
 
     socket.on('match', function(data){
-      var socket_id = socket.id;
       var match_request_msg = {"match_request":"COMPLETE"};
       var jsonData = JSON.parse(data);
       var nickname = jsonData.nickname;
@@ -155,11 +144,11 @@ module.exports = function(io,conn) {
       room = tmp*100+room_idx; // 방번호 계산부분
       socket.join(room); //클라 해당 방번호에 join
 
-      matches[room_idx][tmp][nickname] = {"nickname":nickname, "rankscore":score, "room":room, "socket_id":socket_id};
-      socket_nick[socket_id] = {};
-      socket_nick[socket_id] = {"nickname":nickname, "room":room};
+      matches[room_idx][tmp][nickname] = {"nickname":nickname, "rankscore":score, "room":room, "socket_id":socket.id};
+      socket_nick[socket.id] = {};
+      socket_nick[socket.id] = {"nickname":nickname, "room":room};
 
-      io.to(socket_id).emit('match_request', match_request_msg);
+      io.to(socket.id).emit('match_request', match_request_msg);
 
       console.log("match_request_msg : ",matches[room_idx][tmp][nickname], room, tmp);
 
@@ -168,7 +157,7 @@ module.exports = function(io,conn) {
         var msg = {"complete":"COMPLETE", "info":matchData};
     //    console.log('match_complete : ', msg);
         io.sockets.in(room).emit('match_complete', msg);
-        delete socket_nick[socket_id];
+        delete socket_nick[socket.id];
         delete matches[room_idx][tmp];
       }
       /*matches[idx][nickname] = {"nickname":nickname, "rankscore":score, "room":idx};
