@@ -62,7 +62,7 @@ module.exports = function(io,conn) {
         matches[room_idx][room_idx2][nickname] = {};
         matches[room_idx][room_idx2][nickname] = {"nickname":nickname, "rankscore":score, "room":room, "socket_id":socket.id};
       //  console.log('match_over : ', matches[room_idx][room_idx2], room_idx, room_idx2);
-        if(Object.keys(matches[room_idx][room_idx2]).length === 4) {
+        if(Object.keys(matches[room_idx][room_idx2]).length === 2) {
           var matchData = matches[room_idx][room_idx2];
           var msg = {"complete":"COMPLETE", "info":matchData};
         //  console.log('match_complete : ', msg);
@@ -150,12 +150,12 @@ module.exports = function(io,conn) {
 
       io.to(socket.id).emit('match_request', match_request_msg);
 
-      console.log("match_request_msg : ",matches[room_idx][tmp][nickname], room, tmp);
+      console.log("match_request_msg : ",matches[room_idx][tmp], room, tmp);
 
       if(Object.keys(matches[room_idx][tmp]).length === 2) {
         var matchData = matches[room_idx][tmp];
         var msg = {"complete":"COMPLETE", "info":matchData};
-    //    console.log('match_complete : ', msg);
+        console.log('match_complete : ', msg);
         io.sockets.in(room).emit('match_complete', msg);
         delete socket_nick[socket.id];
         delete matches[room_idx][tmp];
@@ -182,7 +182,7 @@ module.exports = function(io,conn) {
     });
 
     socket.on('disconnect', function() {
-      //console.log('user disconnected: ' + socket.id);
+      console.log('user_match disconnected: ' + socket.id);
       var flag = 0;
       if(socket_nick[socket.id] != undefined) {
         var nickname = socket_nick[socket.id].nickname;

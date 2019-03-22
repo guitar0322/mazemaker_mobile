@@ -7,6 +7,8 @@ module.exports=function(io,conn){
   }
   // connection event handler
   // connection이 수립되면 event handler function의 인자로 socket인 들어온다
+  io.set('heartbeat interval', 2000);
+  io.set('heartbeat timeout', 10000);
   io.on('connection', function(socket) {
 
     socket.on('start',function(data){
@@ -18,7 +20,7 @@ module.exports=function(io,conn){
 
 
 
-
+	  socket.leave(roomNum);
       socket.join(roomNum);
 
       conn.query('update user set ticket = ticket-1 where nickname = ?', nickname, (err, result) => {
@@ -266,7 +268,10 @@ module.exports=function(io,conn){
 	    //	sendGiveUp(io,socket,roomNum,user_cnt);
 	    console.log("u: "+Object.keys(rooms[roomNum]["userlist"]).length);
 	    console.log("g: "+Object.keys(rooms[roomNum]["giveuplist"]).length);
-	    if(user_cnt===MAX_USER){
+		if(Object.keys(rooms[roomNum]["giveuplist"]).length === MAX_USER) {
+		
+		}
+		else if(user_cnt===MAX_USER){
 		    var roomData= rooms[roomNum]["userlist"];
 
 		    console.log("round_end: ",roomData);
