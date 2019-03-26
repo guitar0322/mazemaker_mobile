@@ -1,5 +1,5 @@
 var mysql = require('mysql');
-var conn = mysql.createConnection({
+var pool = mysql.createPool({
   host:'localhost',
   port:3306,
   user:'root',
@@ -7,4 +7,4 @@ var conn = mysql.createConnection({
   database:'miro',
   dateStrings: 'date'
 });
-module.exports = conn;
+module.exports = pool;
