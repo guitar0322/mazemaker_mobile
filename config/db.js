@@ -5,6 +5,7 @@ var pool = mysql.createPool({
   user:'root',
   password:'!Q2w3e4r',
   database:'miro',
-  dateStrings: 'date'
+  dateStrings: 'date',
+  connectionLimit : 50
 });
 module.exports = pool;
