@@ -123,7 +123,7 @@ module.exports = function(io,conn) {
       else {
         for(var i = 0; i < 10000; i++) {
           if(matches[room_idx][i] != undefined) {
-            if(Object.keys(matches[room_idx][tmp]).length >= 1) {
+            if(Object.keys(matches[room_idx][i]).length == 1) {
               tmp = i;
               flag = 1;
               break;
@@ -158,10 +158,8 @@ module.exports = function(io,conn) {
         console.log('match_complete : ', msg);
         io.sockets.in(room).emit('match_complete', msg);
         delete socket_nick[socket.id];
-        delete matches[room_idx][tmp];
       }
       /*matches[idx][nickname] = {"nickname":nickname, "rankscore":score, "room":idx};
-
       if(Object.key(matches[idx]).length===2){
         var matchData = matches[idx];
         var msg = {"complete":"COMPLETE", "info":matchData};
