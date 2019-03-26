@@ -1,4 +1,4 @@
-module.exports = function(io,conn) {
+module.exports = function(io) {
   var matches = {};
   var socket_nick = {};
 
