@@ -23,7 +23,7 @@ router.post('/', (req, res) =>{
       }
       connection.release();
     })
-  }))
+  })
 })
 
 module.exports = router;
