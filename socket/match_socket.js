@@ -1,7 +1,7 @@
 module.exports = function(io) {
   var matches = {};
   var socket_nick = {};
-  const MAX_USER 2;
+  const MAX_USER = 2;
   io.on('connection', function(socket) {
   //  console.log('match_socket: ',socket.id);
 
