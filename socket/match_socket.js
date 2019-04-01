@@ -1,7 +1,7 @@
 module.exports = function(io) {
   var matches = {};
   var socket_nick = {};
-
+  const MAX_USER 2;
   io.on('connection', function(socket) {
   //  console.log('match_socket: ',socket.id);
 
@@ -62,7 +62,7 @@ module.exports = function(io) {
         matches[room_idx][room_idx2][nickname] = {};
         matches[room_idx][room_idx2][nickname] = {"nickname":nickname, "rankscore":score, "room":room, "socket_id":socket.id};
       //  console.log('match_over : ', matches[room_idx][room_idx2], room_idx, room_idx2);
-        if(Object.keys(matches[room_idx][room_idx2]).length === 2) {
+        if(Object.keys(matches[room_idx][room_idx2]).length === MAX_USER) {
           var matchData = matches[room_idx][room_idx2];
           var msg = {"complete":"COMPLETE", "info":matchData};
         //  console.log('match_complete : ', msg);
@@ -152,7 +152,7 @@ module.exports = function(io) {
 
       console.log("match_request_msg : ",matches[room_idx][tmp], room, tmp);
 
-      if(Object.keys(matches[room_idx][tmp]).length === 2) {
+      if(Object.keys(matches[room_idx][tmp]).length === MAX_USER) {
         var matchData = matches[room_idx][tmp];
         var msg = {"complete":"COMPLETE", "info":matchData};
         console.log('match_complete : ', msg);
