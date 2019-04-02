@@ -8,6 +8,9 @@ conn.on('error', function() {});
 require('./socket/ingame_socket')(io,conn);
 require('./socket/match_socket')(io,conn);
 
+require('./socket/ingame_socket')(io);
+require('./socket/match_socket')(io);
+
 app.use(router);
 //app.use('/',register);
 app.listen(8080, function(){

@@ -1,7 +1,7 @@
-module.exports = function(io,conn) {
-  var matches = {};
+module.exports = function(io) {
+  var  matches = {};
   var socket_nick = {};
-
+  const MAX_USER = 2;
   io.on('connection', function(socket) {
   //  console.log('match_socket: ',socket.id);
 
@@ -62,13 +62,11 @@ module.exports = function(io,conn) {
         matches[room_idx][room_idx2][nickname] = {};
         matches[room_idx][room_idx2][nickname] = {"nickname":nickname, "rankscore":score, "room":room, "socket_id":socket.id};
       //  console.log('match_over : ', matches[room_idx][room_idx2], room_idx, room_idx2);
-        if(Object.keys(matches[room_idx][room_idx2]).length === 2) {
+        if(Object.keys(matches[room_idx][room_idx2]).length === MAX_USER) {
           var matchData = matches[room_idx][room_idx2];
           var msg = {"complete":"COMPLETE", "info":matchData};
         //  console.log('match_complete : ', msg);
           io.sockets.in(room).emit('match_complete', msg);
-          delete socket_nick[socket.id];
-          delete matches[room_idx][room_idx2];
         }
     })
 
@@ -123,7 +121,7 @@ module.exports = function(io,conn) {
       else {
         for(var i = 0; i < 10000; i++) {
           if(matches[room_idx][i] != undefined) {
-            if(Object.keys(matches[room_idx][tmp]).length >= 1) {
+            if(Object.keys(matches[room_idx][i]).length == 1) {
               tmp = i;
               flag = 1;
               break;
@@ -152,16 +150,13 @@ module.exports = function(io,conn) {
 
       console.log("match_request_msg : ",matches[room_idx][tmp], room, tmp);
 
-      if(Object.keys(matches[room_idx][tmp]).length === 2) {
+      if(Object.keys(matches[room_idx][tmp]).length === MAX_USER) {
         var matchData = matches[room_idx][tmp];
         var msg = {"complete":"COMPLETE", "info":matchData};
         console.log('match_complete : ', msg);
         io.sockets.in(room).emit('match_complete', msg);
-        delete socket_nick[socket.id];
-        delete matches[room_idx][tmp];
       }
       /*matches[idx][nickname] = {"nickname":nickname, "rankscore":score, "room":idx};
-
       if(Object.key(matches[idx]).length===2){
         var matchData = matches[idx];
         var msg = {"complete":"COMPLETE", "info":matchData};
@@ -187,8 +182,17 @@ module.exports = function(io,conn) {
       if(socket_nick[socket.id] != undefined) {
         var nickname = socket_nick[socket.id].nickname;
         var room = socket_nick[socket.id].room;
+        var room_idx = room % 100, room_idx2 = Math.floor(room / 100, 0);
         delete socket_nick[socket.id];
-        for(var i = 0; i < 30; i++) {
+        if(Object.keys(matches[room_idx][room_idx2]).length === 1) {
+          delete matches[room_idx][room_idx2];
+          socket.leave(room);
+        }
+        else if(Object.keys(matches[room_idx][room_idx2]).length > 1) {
+          delete matches[room_idx][room_idx2][nickname];
+          socket.leave(room);
+        }
+        /*for(var i = 0; i < 30; i++) {
           if(matches[i] != undefined) {
             for(var j = 0; j < 10000; j++) {
               if(matches[i][j] != undefined && matches[i][j][nickname] != undefined && matches[i][j][nickname].nickname === nickname) {
@@ -210,7 +214,7 @@ module.exports = function(io,conn) {
           }
           if(flag == 1)
             break;
-        }
+        }*/
       }
     });
   });
