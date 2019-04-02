@@ -1,5 +1,5 @@
 module.exports = function(io) {
-  var matches = {};
+  var  matches = {};
   var socket_nick = {};
   const MAX_USER = 2;
   io.on('connection', function(socket) {
@@ -67,8 +67,6 @@ module.exports = function(io) {
           var msg = {"complete":"COMPLETE", "info":matchData};
         //  console.log('match_complete : ', msg);
           io.sockets.in(room).emit('match_complete', msg);
-          delete socket_nick[socket.id];
-          delete matches[room_idx][room_idx2];
         }
     })
 
@@ -157,7 +155,6 @@ module.exports = function(io) {
         var msg = {"complete":"COMPLETE", "info":matchData};
         console.log('match_complete : ', msg);
         io.sockets.in(room).emit('match_complete', msg);
-        delete socket_nick[socket.id];
       }
       /*matches[idx][nickname] = {"nickname":nickname, "rankscore":score, "room":idx};
       if(Object.key(matches[idx]).length===2){
@@ -185,8 +182,17 @@ module.exports = function(io) {
       if(socket_nick[socket.id] != undefined) {
         var nickname = socket_nick[socket.id].nickname;
         var room = socket_nick[socket.id].room;
+        var room_idx = room % 100, room_idx2 = Math.floor(room / 100, 0);
         delete socket_nick[socket.id];
-        for(var i = 0; i < 30; i++) {
+        if(Object.keys(matches[room_idx][room_idx2]).length === 1) {
+          delete matches[room_idx][room_idx2];
+          socket.leave(room);
+        }
+        else if(Object.keys(matches[room_idx][room_idx2]).length > 1) {
+          delete matches[room_idx][room_idx2][nickname];
+          socket.leave(room);
+        }
+        /*for(var i = 0; i < 30; i++) {
           if(matches[i] != undefined) {
             for(var j = 0; j < 10000; j++) {
               if(matches[i][j] != undefined && matches[i][j][nickname] != undefined && matches[i][j][nickname].nickname === nickname) {
@@ -208,7 +214,7 @@ module.exports = function(io) {
           }
           if(flag == 1)
             break;
-        }
+        }*/
       }
     });
   });

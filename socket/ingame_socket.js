@@ -415,9 +415,6 @@ module.exports=function(io){
         rooms[roomNum]["giveuplist"].push({"nickname":rooms[roomNum]["socketID"][socket.id]})
         var nickname = rooms[roomNum]["socketID"][socket.id];
         if(Object.keys(rooms[roomNum]["giveuplist"]).length===MAX_USER){
-          //rooms[roomNum]=[];
-          var room_idx = roomNum % 100, room_idx2 = Math.floor(roomNum / 100, 0);
-          delete matches[room_idx][room_idx2];
           delete rooms[roomNum];
         }
         else{
