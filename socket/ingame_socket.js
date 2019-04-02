@@ -9,8 +9,8 @@ module.exports=function(io){
   }
   // connection event handler
   // connection이 수립되면 event handler function의 인자로 socket인 들어온다
-  io.set('heartbeat interval', 2000);//2초마다 poll
-  io.set('heartbeat timeout', 10000);//10초  -> discconnect호출?
+ // io.set('heartbeat interval', 2000);//2초마다 poll
+  //io.set('heartbeat timeout', 10000);//10초  -> discconnect호출?
   io.on('connection', function(socket) {
 
     socket.on('start',function(data){
