@@ -2,11 +2,6 @@ var app = require('./config/express')();
 var router = require('./router/index');
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
-var conn = require('./config/db')
-conn.connect();
-conn.on('error', function() {});
-require('./socket/ingame_socket')(io,conn);
-require('./socket/match_socket')(io,conn);
 
 require('./socket/ingame_socket')(io);
 require('./socket/match_socket')(io);
