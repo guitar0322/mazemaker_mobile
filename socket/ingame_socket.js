@@ -192,7 +192,7 @@ module.exports=function(io){
       }
 
       var msg = {"status":"OK", "info":roomData,"best":maze,"wall":wall, "map":map};
-      io.to(socket.id).emit('round_end',msg);
+      io.sockets.in(roomNum).emit('round_end',msg);
       console.log("msg: ",msg);
       rooms[roomNum]["count"]=0;
       console.log("round_end finish");
