@@ -319,7 +319,11 @@ module.exports=function(io){
         }
       })
     })
-
+		var room_idx = roomNum /100, room_idx2 = Math.floor(roomNum%100, 0);
+		console.log("BEFORE DELETE MATCHES : ", matches[room_idx][room_idx2]);
+		delete matches[room_idx][room_idx2];
+		delete socket_nick[socket.id];
+		console.log("AFTER DELETE MATCHES : ", matches[room_idx][room_idx2]);
     socket.leave(roomNum);
     if(rooms[roomNum] != undefined) {
       delete rooms[roomNum];
@@ -385,7 +389,7 @@ module.exports=function(io){
             }
             var msg = {"status":"OK", "info":roomData,"best":maze,"wall":wall, "map":map};
             io.sockets.in(roomNum).emit('round_end',msg);
-            
+
           }
           else{
               var roomData = [];
