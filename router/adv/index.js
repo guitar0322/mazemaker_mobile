@@ -17,7 +17,7 @@ router.post('/', (req, res) =>{
         })
       }
       else {
-        conn.query('update user set ticket = ticket + 1 where nickname = ?', nickname, (err, result) => {
+        connection.query('update user set ticket = ticket + 1 where nickname = ?', nickname, (err, result) => {
           if(err) throw err;
         })
       }
