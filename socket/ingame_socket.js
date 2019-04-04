@@ -216,7 +216,7 @@ module.exports=function(io){
       else{
           var roomData = [];
           var maze = "";
-					var room_idx = roomNum /100, room_idx2 = Math.floor(roomNum%100, 0);
+					var room_idx = roomNum %100, room_idx2 = Math.floor(roomNum/100, 0);
 					console.log("BEFORE DELETE MATCHES : ", matches[room_idx][room_idx2]);
 					delete matches[room_idx][room_idx2];
 					delete socket_nick[socket.id];
@@ -324,7 +324,7 @@ module.exports=function(io){
         }
       })
     })
-		var room_idx = roomNum /100, room_idx2 = Math.floor(roomNum%100, 0);
+		var room_idx = roomNum %100, room_idx2 = Math.floor(roomNum/100, 0);
 		console.log("BEFORE DELETE MATCHES : ", matches[room_idx][room_idx2]);
 		delete matches[room_idx][room_idx2];
 		delete socket_nick[socket.id];
