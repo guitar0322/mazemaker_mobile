@@ -30,7 +30,7 @@ from user order by score;`;
       sql = `With T(nickname, score, ranking) as (select nickname, score, (@r:=@r+1) as ranking from user, (select @r:=0) as B
       order by score desc, nickname)
       select nickname, score from T where ranking DIV 11 = (select ranking from T where nickname= ?) DIV 11;`;
-      conn.query(sql,[req.body.nickname],function(err,result){
+      connection.query(sql,[req.body.nickname],function(err,result){
         if(err)
           throw err;
         if(result.lenght===0){
