@@ -184,8 +184,10 @@ module.exports=function(io){
         }
     }
 
+    delete rooms[roomNum]["socketID"][socket.id];
     user_cnt =rooms[roomNum]["count"]+Object.keys(rooms[roomNum]["giveuplist"]).length;
 
+    socket.leave(roomNum);
 
     if(user_cnt===MAX_USER){
       var map = new Array(2);
@@ -206,6 +208,10 @@ module.exports=function(io){
             tmpJson["score"]=0;
             roomData.push(tmpJson);
         }
+        var msg = {"status":"OK", "info":roomData,"best":maze,"wall":wall, "map":map};
+        io.sockets.in(roomNum).emit('round_end',msg);
+        console.log("msg: ",msg);
+
       }
       else{
           var roomData = [];
@@ -213,13 +219,6 @@ module.exports=function(io){
           if(rooms[roomNum]!=undefined)
             delete rooms[roomNum];
       }
-
-      var msg = {"status":"OK", "info":roomData,"best":maze,"wall":wall, "map":map};
-      io.sockets.in(roomNum).emit('round_end',msg);
-      console.log("msg: ",msg);
-      socket.leave(roomNum);
-
-      console.log("enforce finish");
     }
 
     pool.getConnection((err, connection) => {
@@ -321,10 +320,11 @@ module.exports=function(io){
       })
     })
 
+    socket.leave(roomNum);
     if(rooms[roomNum] != undefined) {
       delete rooms[roomNum];
     }
-    socket.leave(roomNum);
+
   //  console.log('call disconnect');
   //  socket.disconnect();
     console.log('game_end finish');
@@ -337,9 +337,11 @@ module.exports=function(io){
     //강제종료가 됬을때만 ...
     for(var roomNum in rooms){
       var socketJson = rooms[roomNum]["socketID"];
-
       if(socketJson[socket.id]!=undefined){
         console.log("deleteID: ",rooms[roomNum]["socketID"][socket.id]);
+
+        socket.leave(roomNum);
+
         var nickname = rooms[roomNum]["socketID"][socket.id];
         delete rooms[roomNum]["socketID"][socket.id];
 
@@ -357,6 +359,7 @@ module.exports=function(io){
               break;
             }
         }
+
         user_cnt =rooms[roomNum]["count"]+Object.keys(rooms[roomNum]["giveuplist"]).length;
         console.log("DRN: ", rooms[roomNum]["count"])
 
@@ -380,6 +383,9 @@ module.exports=function(io){
                 tmpJson["score"]=0;
                 roomData.push(tmpJson);
             }
+            var msg = {"status":"OK", "info":roomData,"best":maze,"wall":wall, "map":map};
+            io.sockets.in(roomNum).emit('round_end',msg);
+            
           }
           else{
               var roomData = [];
@@ -387,13 +393,6 @@ module.exports=function(io){
               if(rooms[roomNum]!=undefined)
                 delete rooms[roomNum];
           }
-
-          var msg = {"status":"OK", "info":roomData,"best":maze,"wall":wall, "map":map};
-          io.sockets.in(roomNum).emit('round_end',msg);
-          console.log("msg: ",msg);
-          socket.leave(roomNum);
-
-          console.log("enforce finish");
         }
 
         pool.getConnection((err, connection) => {
@@ -412,8 +411,6 @@ module.exports=function(io){
 
             connection.query('update user set loss = ?, score = ? where nickname = ?', params, (err, result) => {
               if(err) throw err;
-              //        socket.leave(i);
-
               connection.release();
             })
           })
