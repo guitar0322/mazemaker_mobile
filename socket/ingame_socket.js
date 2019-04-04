@@ -61,8 +61,6 @@ module.exports=function(io){
       var roomNum = jsonData.room;
       var nickname = jsonData.nickname;
 
-      socket.leave(roomNum);
-      socket.join(roomNum);
 
       pool.getConnection((err, connection) => {
         connection.query('update user set ticket = ticket-1 where nickname = ?', nickname, (err, result) => {
@@ -212,6 +210,8 @@ module.exports=function(io){
       else{
           var roomData = [];
           var maze = "";
+          if(rooms[roomNum]!=undefined)
+            delete rooms[roomNum];
       }
 
       var msg = {"status":"OK", "info":roomData,"best":maze,"wall":wall, "map":map};
@@ -325,27 +325,30 @@ module.exports=function(io){
       delete rooms[roomNum];
     }
     socket.leave(roomNum);
-    console.log('call disconnect');
-    socket.disconnect();
+  //  console.log('call disconnect');
+  //  socket.disconnect();
     console.log('game_end finish');
   });
   //접속한 클라이언트의 정보가 수신되면
 
 
   socket.on('disconnect', function() {
+
     //강제종료가 됬을때만 ...
     for(var roomNum in rooms){
       var socketJson = rooms[roomNum]["socketID"];
 
       if(socketJson[socket.id]!=undefined){
         console.log("deleteID: ",rooms[roomNum]["socketID"][socket.id]);
+        var nickname = rooms[roomNum]["socketID"][socket.id];
+        delete rooms[roomNum]["socketID"][socket.id];
+
         if(rooms[roomNum]["giveuplist"]===undefined){
           rooms[roomNum]["giveuplist"]=[];
         }
 
-        rooms[roomNum]["giveuplist"].push({"nickname":rooms[roomNum]["socketID"][socket.id]})
+        rooms[roomNum]["giveuplist"].push({"nickname":nickname});
 
-        var nickname = rooms[roomNum]["socketID"][socket.id];
 
         for(var i in rooms[roomNum]["userlist"]){
             if(rooms[roomNum]["userlist"][i]["nickname"]==nickname){
@@ -364,6 +367,7 @@ module.exports=function(io){
           wall = JSON.stringify(makeWall(wall));
 
           if(Object.keys(rooms[roomNum]["giveuplist"]).length!==MAX_USER){
+
             var roomData= rooms[roomNum]["userlist"];
               var maze = getBestScore(roomData);
 
@@ -380,6 +384,8 @@ module.exports=function(io){
           else{
               var roomData = [];
               var maze = "";
+              if(rooms[roomNum]!=undefined)
+                delete rooms[roomNum];
           }
 
           var msg = {"status":"OK", "info":roomData,"best":maze,"wall":wall, "map":map};
@@ -407,7 +413,7 @@ module.exports=function(io){
             connection.query('update user set loss = ?, score = ? where nickname = ?', params, (err, result) => {
               if(err) throw err;
               //        socket.leave(i);
-              delete rooms[roomNum]["socketID"][socket.id];
+
               connection.release();
             })
           })
