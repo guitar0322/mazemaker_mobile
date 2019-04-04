@@ -12,7 +12,7 @@ router.post('/', (req, res) =>{
         var dt = new Date();
         var d = dt.toFormat('YYYY-MM-DD HH24:MI:SS');
         var params = [d, nickname];
-        conn.query('update user set ticket = ticket + 1, last_date = ? where nickname = ?', params, (err, result) => {
+        connection.query('update user set ticket = ticket + 1, last_date = ? where nickname = ?', params, (err, result) => {
           if(err) throw err;
         })
       }
