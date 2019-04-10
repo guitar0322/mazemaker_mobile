@@ -308,7 +308,7 @@ module.exports=function(io){
             })
           }
           else {
-            conn.query('update user set score = score + ?, loss = loss + 1 where nickname = ?', params, (err, result) => {
+            connection.query('update user set score = score + ?, loss = loss + 1 where nickname = ?', params, (err, result) => {
               if(err) throw err;
               score += org_score;
               var msg = {"ticket":ticket, "time":time, "win":win, "loss":loss, "score":score};
