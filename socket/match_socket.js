@@ -175,49 +175,5 @@ module.exports = function(io) {
             //3-2-2 해당 클라 소켓에 추가
             //3-2-3 소켓에 있는 클라들에게 error 송신
     });
-
-    socket.on('disconnect', function() {
-      console.log('user_match disconnected: ' + socket.id);
-      var flag = 0;
-      if(socket_nick[socket.id] != undefined) {
-        var nickname = socket_nick[socket.id].nickname;
-        var room = socket_nick[socket.id].room;
-        var room_idx = room % 100, room_idx2 = Math.floor(room / 100, 0);
-        delete socket_nick[socket.id];
-				if(matches[room_idx][room_idx2] != undefined) {
-	        if(Object.keys(matches[room_idx][room_idx2]).length === 1) {
-	          delete matches[room_idx][room_idx2];
-	          socket.leave(room);
-	        }
-	        else if(Object.keys(matches[room_idx][room_idx2]).length > 1) {
-	          delete matches[room_idx][room_idx2][nickname];
-	          socket.leave(room);
-	        }
-				}
-        /*for(var i = 0; i < 30; i++) {
-          if(matches[i] != undefined) {
-            for(var j = 0; j < 10000; j++) {
-              if(matches[i][j] != undefined && matches[i][j][nickname] != undefined && matches[i][j][nickname].nickname === nickname) {
-                if(Object.keys(matches[i][j]).length === 1) {
-                  delete matches[i][j];
-                  delete socket_nick[socket.id];
-                  socket.leave(room);
-                  break;
-                }
-                else if(Object.keys(matches[i][j]).length > 1) {
-                  delete socket_nick[socket.id];
-                  delete matches[i][j][nickname];
-                  socket.leave(room);
-                  break;
-                }
-                flag = 1;
-              }
-            }
-          }
-          if(flag == 1)
-            break;
-        }*/
-      }
-    });
   });
 }
