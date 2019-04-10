@@ -184,14 +184,16 @@ module.exports = function(io) {
         var room = socket_nick[socket.id].room;
         var room_idx = room % 100, room_idx2 = Math.floor(room / 100, 0);
         delete socket_nick[socket.id];
-        if(Object.keys(matches[room_idx][room_idx2]).length === 1) {
-          delete matches[room_idx][room_idx2];
-          socket.leave(room);
-        }
-        else if(Object.keys(matches[room_idx][room_idx2]).length > 1) {
-          delete matches[room_idx][room_idx2][nickname];
-          socket.leave(room);
-        }
+				if(matches[room_idx][room_idx2] != undefined) {
+	        if(Object.keys(matches[room_idx][room_idx2]).length === 1) {
+	          delete matches[room_idx][room_idx2];
+	          socket.leave(room);
+	        }
+	        else if(Object.keys(matches[room_idx][room_idx2]).length > 1) {
+	          delete matches[room_idx][room_idx2][nickname];
+	          socket.leave(room);
+	        }
+				}
         /*for(var i = 0; i < 30; i++) {
           if(matches[i] != undefined) {
             for(var j = 0; j < 10000; j++) {
