@@ -52,10 +52,35 @@ module.exports=function(io){
   }
   // connection event handler
   // connection이 수립되면 event handler function의 인자로 socket인 들어온다
-  io.set('heartbeat interval', 2000);//2초마다 poll
+  io.set('heartbeat interval', 10000);//2초마다 poll
   io.set('heartbeat timeout', 10000);//10초  -> discconnect호출?
   io.on('connection', function(socket) {
-
+	socket.on('ping', function(data){
+	  var jsonData = JSON.parse(data);
+	  var roomNum = jsonData.room;
+	  var nickname = jsonData.nickname;
+	  var msg = {"status":"pong"};
+	  if(rooms[roomNum] !== undefined){
+	  	if(rooms[roomNum]["giveuplist"] !== undefined){
+		  console.log("before ping userlist: ", rooms[roomNum]["userlist"]);
+		  console.log("before ping giveuplist : ", rooms[roomNum]["giveuplist"]);
+	      for(var i in rooms[roomNum]["giveuplist"]){
+			if(rooms[roomNum]["giveuplist"][i]["nickname"] == nickname){
+			  rooms[roomNum]["giveuplist"].splice(i,1);
+			  rooms[roomNum]["userlist"].push({"nickname": nickname, "score":"0","maze":"0"});
+		  	  console.log("after ping userlist : ", rooms[roomNum]["userlist"]);
+		  	  console.log("after ping giveuplist : ", rooms[roomNum]["giveuplist"]);
+			  socket.join(roomNum);
+			  msg["status"] = "RECOVERY";
+			}
+		  }
+		}    
+	  }
+	  else{
+		msg["status"] = "GAMEEND";
+	  }
+	  io.sockets.to(socket.io).emit('ping', msg);
+	});
     socket.on('start',function(data){
       var jsonData = JSON.parse(data);
       var roomNum = jsonData.room;
@@ -82,7 +107,7 @@ module.exports=function(io){
       rooms[roomNum]["socketID"][socket.id]=nickname;
       rooms[roomNum]["count"]+=1;
 
-      console.log("userCnt: ",  rooms[roomNum]["count"]);
+      console.log("start userCnt: ",  rooms[roomNum]["count"]);
 
       if(rooms[roomNum]["count"]===MAX_USER)
       {
@@ -95,29 +120,30 @@ module.exports=function(io){
         io.sockets.in(roomNum).emit('start',msg);
 
         rooms[roomNum]["count"]=0;
-        console.log("room: ", rooms);
+        console.log("room: ", rooms[roomNum]["userlist"]);
         console.log("start finish");
       }
     });
-
     socket.on('round_end',function(data){
+      var jsonData = JSON.parse(data);
       //roomnum, nickname
       //모든점수, 다음 맵정보, 1등맵정보
-      var jsonData = JSON.parse(data);
-
       var roomNum = jsonData.room
       var nickname = jsonData.nickname;
-
       console.log(nickname,"가 들어왔습니다");
-
+	  /*if(rooms[roomNum] == undefined){
+        io.sockets.to(socket.id).emit('round_end',msg);
+	  	console.log(nickname,"is arrive after game_end");
+		return;
+	  }*/
+	 // console.log("testtest", rooms[roomNum]["giveuplist"]);
       for(var i in rooms[roomNum]["userlist"]){
         if(rooms[roomNum]["userlist"][i]["nickname"]==nickname){
           rooms[roomNum]["userlist"][i]["score"]=jsonData.score;
           rooms[roomNum]["userlist"][i]["maze"]=jsonData.maze;
           break;
-        }
+      	}
       }
-
       //rooms[roomNum]["userlist"].push({"nickname": nickname, "score":jsonData.score, "maze":jsonData.maze});
 
       if(rooms[roomNum]["count"]===undefined){
@@ -132,7 +158,6 @@ module.exports=function(io){
       else {
         user_cnt =rooms[roomNum]["count"]+Object.keys(rooms[roomNum]["giveuplist"]).length;
       }
-      console.log("test: ", rooms[roomNum]);
       if(user_cnt===MAX_USER){ //&& Object.keys(rooms[roomNum]["userlist"]).length != 0){
         var map = new Array(2);
         map = new makeMap(map);
@@ -140,7 +165,7 @@ module.exports=function(io){
         wall = JSON.stringify(makeWall(wall));
 
         var roomData= rooms[roomNum]["userlist"];
-        console.log("round_end: ",roomData);
+        //console.log("round_end: ",roomData);
 
         var maze = getBestScore(roomData);
 
@@ -342,7 +367,7 @@ module.exports=function(io){
 
 
   socket.on('disconnect', function() {
-
+	console.log("ingame disconnect in : ", socket.id);
     //강제종료가 됬을때만 ...
     for(var roomNum in rooms){
       var socketJson = rooms[roomNum]["socketID"];
@@ -397,10 +422,13 @@ module.exports=function(io){
 
           }
           else{
-              var roomData = [];
-              var maze = "";
-              if(rooms[roomNum]!=undefined)
-                delete rooms[roomNum];
+            var roomData = [];
+            var maze = "";
+			var room_idx = roomNum %100, room_idx2 = Math.floor(roomNum/100, 0);
+			delete matches[room_idx][room_idx2];
+			delete socket_nick[socket.id];
+          	if(rooms[roomNum]!=undefined)
+            	delete rooms[roomNum];
           }
         }
 
