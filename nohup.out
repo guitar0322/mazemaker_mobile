@@ -1,0 +1,72 @@
+Connected 8080 port!
+Socket IO server listening on port 8088
+[Object: null prototype] { username: 'g15952799551929908254' }
+{ status: 'OK',
+  nickname: '호짜',
+  win: 5,
+  loss: 2,
+  league: 1007,
+  ticketchangedtime: '2019-05-07 19:32:02',
+  ticket: 5,
+  tutorial: 1,
+  version: '1.1.7' }
+ticket input :  5 호짜
+match_socket_connect:  hFtNw8wB0IedWQroAAAA
+match_request_msg :  { '호짜':
+   { nickname: '호짜',
+     rankscore: '1007',
+     room: 10,
+     socket_id: 'hFtNw8wB0IedWQroAAAA' } } 10 0
+match_over :  { nickname: '호짜', room: 10 }
+after match_over room :  10
+match_over :  { nickname: '호짜', room: 10 }
+after match_over room :  10
+match_over :  { nickname: '호짜', room: 10 }
+after match_over room :  10
+match_over :  { nickname: '호짜', room: 10 }
+after match_over room :  10
+match_over :  { nickname: '호짜', room: 10 }
+after match_over room :  10
+match_over :  { nickname: '호짜', room: 10 }
+after match_over room :  10
+match_over :  { nickname: '호짜', room: 10 }
+after match_over room :  10
+match_over :  { nickname: '호짜', room: 10 }
+after match_over room :  10
+match_cancel :  호짜 1007
+match_request_msg :  { '호짜':
+   { nickname: '호짜',
+     rankscore: '1007',
+     room: 10,
+     socket_id: 'hFtNw8wB0IedWQroAAAA' } } 10 0
+match_over :  { nickname: '호짜', room: 10 }
+after match_over room :  10
+match_over :  { nickname: '호짜', room: 10 }
+after match_over room :  10
+match_over :  { nickname: '호짜', room: 10 }
+after match_over room :  10
+match_over :  { nickname: '호짜', room: 10 }
+after match_over room :  10
+match_over :  { nickname: '호짜', room: 10 }
+after match_over room :  10
+match_over :  { nickname: '호짜', room: 10 }
+after match_over room :  10
+match_over :  { nickname: '호짜', room: 10 }
+after match_over room :  10
+match_over :  { nickname: '호짜', room: 10 }
+after match_over room :  10
+match_over :  { nickname: '호짜', room: 10 }
+after match_over room :  10
+match_over :  { nickname: '호짜', room: 10 }
+after match_over room :  10
+match_over :  { nickname: '호짜', room: 10 }
+after match_over room :  10
+match_over :  { nickname: '호짜', room: 10 }
+after match_over room :  10
+match_cancel :  호짜 1007
+match_request_msg :  { '호짜':
+   { nickname: '호짜',
+     rankscore: '1007',
+     room: 10,
+     socket_id: 'hFtNw8wB0IedWQroAAAA' } } 10 0
+match_cancel :  호짜 1007

@@ -21,7 +21,7 @@ router.post('/',function(req,res){
           nickname:nickname,
           win:0,
           loss:0,
-          score:1000,
+          score:1050,
           ticket:5,
           last_date:d,
           tutorial:0

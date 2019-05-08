@@ -7,12 +7,13 @@ router.post('/',function(req,res){
   console.log(req.body);
   pool.getConnection((err, connection)=> {
     var sql = 'select * from user where username = ?';
+	var version = "1.1.8";
     connection.query(sql,[req.body.username],function(err,result){
       if(err){
         throw err;
       }
       if(result.length===0){
-        var msg = {"status":"FIRST"};
+        var msg = {"status":"FIRST", "version":version};
         console.log(msg, req.body.username);
         return res.json(msg);
       }
@@ -24,7 +25,7 @@ router.post('/',function(req,res){
         var last_date = result[0].last_date;
         var ticket = result[0].ticket;
         var tutorial = result[0].tutorial;
-        var msg = {"status":"OK", "nickname":nickname, "win":win, "loss":loss, "league":league, "ticketchangedtime":last_date, "ticket":ticket, "tutorial":tutorial}
+        var msg = {"status":"OK", "nickname":nickname, "win":win, "loss":loss, "league":league, "ticketchangedtime":last_date, "ticket":ticket, "tutorial":tutorial, "version":version}
         console.log(msg);
         return res.json(msg);
       }

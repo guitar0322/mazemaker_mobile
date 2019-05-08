@@ -24,7 +24,7 @@ router.post('/', (req, res) =>{
         if(err) throw err;
         var cur_date = new Date(result[0].last_date);
         var mod_ticket = ticket - result[0].ticket;
-        cur_date.setMinutes(cur_date.getMinutes()+Math.abs(15*mod_ticket));
+        cur_date.setMinutes(cur_date.getMinutes()+Math.abs(20*mod_ticket));
         var mod_date = cur_date.toFormat('YYYY-MM-DD HH24:MI:SS');
         var params = [ticket, mod_date,nickname];
 
