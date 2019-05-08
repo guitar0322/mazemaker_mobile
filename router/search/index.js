@@ -2,6 +2,7 @@ var router = require('express').Router();
 var pool = require('../../config/db')
 
 router.post('/', function(req,res){
+	console.log("search TEST : ", req.body);
 	var sql = "select * from user where nickname=?";
 
 	pool.getConnection((err, connection)=> {

@@ -3,7 +3,7 @@ var pool = require('../../config/db')
 
 router.post('/', function(req, res) {
   var sql = "select * from Friend where (sender=? and receiver=?) or (sender=? and receiver=?)";
-
+  console.log("addFriend TEST : ", req.body);
   pool.getConnection((err, connection) => {
     connection.query(sql, [req.body.nickname, req.body.target_nickname, req.body.target_nickname, req.body.nickname], function(err, result) {
       if (err) {
