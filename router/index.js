@@ -7,6 +7,8 @@ var ticket = require('./ticket/index');
 var adv = require('./adv/index');
 var single = require('./single/index');
 var stage = require('./stage/index');
+var search = require('./search/index');
+var addFriend = require('./addFriend/index');
 
 router.use('/register',register);
 router.use('/login',login);
@@ -16,5 +18,7 @@ router.use('/ticket', ticket);
 router.use('/adver', adv);
 router.use('/single',single);
 router.use('/stage', stage);
+router.use('/search', search);
+router.use('/addFriend', addFriend);
 
 module.exports = router;
