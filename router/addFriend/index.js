@@ -14,14 +14,17 @@ router.post('/', function(req,res){
             var msg = {"result":"OK"};
             res.json(msg);
             connection.release();
+            return ;
         })
 	    }
 	    else {
 	      var msg = {"result":result[0].relation};
-        return res.json(msg);
+
+        res.json(msg);
+        connection.release();
+        return ;
 	    }
 		})
-		connection.release();
 	})
 })
 

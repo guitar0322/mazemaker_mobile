@@ -6,17 +6,21 @@ router.post('/', function(req,res){
 
 	pool.getConnection((err, connection)=> {
 		connection.query(sql, req.body.target_nickname, function(err, result){
-			if(err)
+			if(err){
+				connection.release();
 				throw err
+			}
 			if(result.length===0){
 	       var msg = {"result":"ERROR"};
 	    }
 	    else {
 	      var msg = {"result":result[0].nickname};
 	    }
-			return res.json(msg);
+			res.json(msg);
+			connection.release();
+			return ;
 		})
-		connection.release();
+
 	})
 })
 

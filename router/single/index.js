@@ -3,7 +3,7 @@ var router = require('express').Router();
 router.post('/', function(req,res){
 	var select_sql = 'select * from stage where stage_id=? order by ranking desc';
 	var select_sql2 = 'select * from stage where stage_id=?';
-	var update_sql = 'update stage set nickname=?, record=? where stage_id=? and ranking=?'; 
+	var update_sql = 'update stage set nickname=?, record=? where stage_id=? and ranking=?';
 	var user_stage = req.body.stage;
 	var user_nickname = req.body.nickname;
 	var user_record = parseFloat(req.body.record);
@@ -11,8 +11,10 @@ router.post('/', function(req,res){
 	var msg = {"ranking":update_rank};
 	pool.getConnection((err, connection) => {
 		connection.query(select_sql, user_stage, function(err, result){
-			if(err)
+			if(err){
+				connection.release();
 				throw err;
+			}
 			for(var i in result){
 				if(result[i].record < user_record){
 					update_rank = result[i].ranking;
@@ -27,8 +29,9 @@ router.post('/', function(req,res){
 				connection.query(update_sql,[user_nickname, user_record, user_stage, update_rank]);
 			}
 			msg["ranking"] = update_rank;
-			return res.json(msg);
+			res.json(msg);
 			connection.release();
+			return ;
 		})
 	})
 })
