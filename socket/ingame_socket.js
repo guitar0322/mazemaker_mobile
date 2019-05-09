@@ -74,7 +74,7 @@ module.exports=function(io){
 			  msg["status"] = "RECOVERY";
 			}
 		  }
-		}    
+		}
 	  }
 	  else{
 		msg["status"] = "GAMEEND";
@@ -89,7 +89,10 @@ module.exports=function(io){
 
       pool.getConnection((err, connection) => {
         connection.query('update user set ticket = ticket-1 where nickname = ?', nickname, (err, result) => {
-          if(err) throw err;
+          if(err){
+            connection.release();
+            throw err;
+          }
           //ticket discount coding
           connection.release();
         });
@@ -253,7 +256,10 @@ module.exports=function(io){
 
     pool.getConnection((err, connection) => {
       connection.query('select * from user where nickname = ?', nickname, (err, result) => {
-        if(err) throw err;
+        if(err){
+          connection.release();
+          throw err;
+        }
         var win = result[0].win;
         var loss = result[0].loss + 1;
         var score = result[0].score;
@@ -269,13 +275,15 @@ module.exports=function(io){
         }
 
         connection.query('update user set loss = ?, score = ? where nickname = ?', params, (err, result) => {
-          if(err) throw err;
+          if(err){
+            connection.release();
+            throw err;
+          }
           var msg = {"win":win, "loss":loss, "score":score, "ticket":ticket, "time":ticketchangedtime};
-
           socket.emit('giveup', msg);
-          connection.release();
         })
       })
+      connection.release();
     })
     //socket.disconnect();
 
@@ -312,7 +320,10 @@ module.exports=function(io){
 
     pool.getConnection((err, connection) => {
       connection.query('select * from user where nickname = ?', nickname, (err, result) => {
-        if(err) throw err;
+        if(err){
+          connection.release();
+          throw err;
+        }
         var ticket = result[0].ticket;
         var time = result[0].last_date;
         var org_score = result[0].score;
@@ -321,33 +332,40 @@ module.exports=function(io){
         console.log('game_end testing : ', nickname, org_score, score, win, loss);
         if((org_score + score) <= 0) {
           connection.query('update user set score = 0, loss = loss+1 where nickname = ?', nickname, (err, result) => {
-            if(err) throw err;
+            if(err){
+              connection.release();
+              throw err;
+            }
             var msg = {"ticket":ticket, "time":time, "win":win, "loss":loss, "score":0};
             socket.emit('game_end',msg);
-            connection.release();
           })
         }
         else {
           if(score > 0) {
             connection.query('update user set score = score + ?, win = win + 1 where nickname = ?', params, (err, result) => {
-              if(err) throw err;
+              if(err){
+                connection.release();
+                throw err;
+              }
               score += org_score;
               var msg = {"ticket":ticket, "time":time, "win":win, "loss":loss, "score":score};
               socket.emit('game_end',msg);
-              connection.release();
             })
           }
           else {
             connection.query('update user set score = score + ?, loss = loss + 1 where nickname = ?', params, (err, result) => {
-              if(err) throw err;
+              if(err){
+                connection.release();
+                throw err;
+              }
               score += org_score;
               var msg = {"ticket":ticket, "time":time, "win":win, "loss":loss, "score":score};
               socket.emit('game_end',msg);
-              connection.release();
             })
           }
         }
       })
+      connection.release();
     })
 		var room_idx = roomNum %100, room_idx2 = Math.floor(roomNum/100, 0);
 		console.log("BEFORE DELETE MATCHES : ", matches[room_idx][room_idx2]);

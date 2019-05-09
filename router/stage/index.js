@@ -6,7 +6,10 @@ router.post('/', function(req,res){
 	var msg = [];
 	pool.getConnection((err, connection)=> {
 		connection.query(sql, req.body.stage, function(err, result){
-			console.log(req.body.stage, result);
+			if(err) {
+				connection.release();
+				throw err;
+			}
 			for(var i in result)
 				msg.push({"nickname":result[i].nickname, "record":result[i].record});
 

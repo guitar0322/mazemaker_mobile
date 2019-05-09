@@ -10,6 +10,7 @@ router.post('/',function(req,res){
 	var version = "1.1.8";
     connection.query(sql,[req.body.username],function(err,result){
       if(err){
+        connection.release();
         throw err;
       }
       if(result.length===0){

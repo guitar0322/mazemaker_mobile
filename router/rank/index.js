@@ -14,8 +14,10 @@ from user order by score;`;
 */
   pool.getConnection((err, connection) => {
     connection.query(sql, [],function(err,result){
-      if(err)
+      if(err) {
+        connection.release();
         throw err;
+      }
       if(result.length===0){
         var msg = {'status':'ERROR'};
         return res.json(msg);
@@ -31,8 +33,10 @@ from user order by score;`;
       order by score desc, nickname)
       select nickname, score, ranking from T where ranking DIV 51 = (select ranking from T where nickname= ?) DIV 51;`;
       connection.query(sql,[req.body.nickname],function(err,result){
-        if(err)
+        if(err) {
+          connection.release();
           throw err;
+        }
         if(result.lenght===0){
           var msg = {'status':'ERROR'};
           return res.json(msg);

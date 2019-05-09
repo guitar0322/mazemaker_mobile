@@ -19,20 +19,28 @@ router.post('/', function(req,res){
 				if(result[i].record < user_record){
 					update_rank = result[i].ranking;
 					if(update_rank < 10){
-						connection.query(update_sql,
-								[result[i].nickname, result[i].record, user_stage, result[i].ranking+1])
+						connection.query(update_sql,[result[i].nickname, result[i].record, user_stage, result[i].ranking+1], (err, result)=> {
+							if(err){
+		            connection.release();
+		            throw err;
+		          }
+						})
 					}
 				}
 			}
 			if(update_rank != -1){
 				console.log(user_stage, update_rank, user_record, user_nickname);
-				connection.query(update_sql,[user_nickname, user_record, user_stage, update_rank]);
+				connection.query(update_sql,[user_nickname, user_record, user_stage, update_rank], (err, result)=> {
+					if(err){
+            connection.release();
+            throw err;
+          }
+				});
 			}
 			msg["ranking"] = update_rank;
 			res.json(msg);
-			connection.release();
-			return ;
 		})
+		connection.release();
 	})
 })
 

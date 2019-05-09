@@ -18,10 +18,8 @@ router.post('/', function(req,res){
 	      var msg = {"result":result[0].nickname};
 	    }
 			res.json(msg);
-			connection.release();
-			return ;
 		})
-
+		connection.release();
 	})
 })
 

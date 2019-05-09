@@ -10,7 +10,10 @@ router.post('/',function(req,res){
 
   pool.getConnection((err, connection)=> {
     connection.query(sql, nickname, (err, result) => {
-      if(err) throw err;
+      if(err) {
+        connection.release();
+        throw err;
+      }
 
       if(result.length === 0) {
         var dt = new Date();
@@ -27,9 +30,15 @@ router.post('/',function(req,res){
           tutorial:0
         }
         connection.query('insert into user set ?', register_info, (err, result) => {
-          if(err) throw err;
+          if(err) {
+            connection.release();
+            throw err;
+          }
           connection.query(sql, nickname, (err, result) => {
-            if(err) throw err;
+            if(err) {
+              connection.release();
+              throw err;
+            }
             var win = result[0].win;
             var loss = result[0].loss;
             var league = result[0].score;

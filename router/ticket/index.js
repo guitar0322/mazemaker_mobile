@@ -13,7 +13,10 @@ router.post('/', (req, res) =>{
     var params = [d, ticket, nickname];
     pool.getConnection((err, connection) => {
       connection.query('update user set last_date = ?, ticket = ? where nickname = ?', params, (err, result) => {
-        if(err) throw err;
+        if(err){
+          connection.release();
+          throw err;
+        }
       })
       connection.release();
     })
@@ -21,7 +24,10 @@ router.post('/', (req, res) =>{
   else {
     pool.getConnection((err, connection) => {
       connection.query('select * from user where nickname = ?', nickname, (err, result) => {
-        if(err) throw err;
+        if(err){
+          connection.release();
+          throw err;
+        }
         var cur_date = new Date(result[0].last_date);
         var mod_ticket = ticket - result[0].ticket;
         cur_date.setMinutes(cur_date.getMinutes()+Math.abs(20*mod_ticket));
@@ -29,10 +35,13 @@ router.post('/', (req, res) =>{
         var params = [ticket, mod_date,nickname];
 
         connection.query('update user set ticket = ?, last_date = ? where nickname = ?', params, (err, result)=> {
-          if(err) throw err;
-          connection.release();
+          if(err){
+            connection.release();
+            throw err;
+          }
         })
       })
+      connection.release();
     })
   }
 })

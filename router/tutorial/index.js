@@ -6,16 +6,21 @@ router.post('/', (req, res) =>{
   console.log("tutorial complete : ", nickname);
   pool.getConnection((err, connection) => {
     connection.query('select * from user where nickname = ?', nickname, (err, result) => {
-      if(err) throw err;
+      if(err){
+        connection.release();
+        throw err;
+      }
       connection.query('update user set tutorial = 1 where nickname = ?', nickname, (err, result) => {
-        if(err) throw err;
-
+        if(err){
+          connection.release();
+          throw err;
+        }
         var msg = {"status":"COMPLETE"};
         console.log("turorial conplete : ", msg);
         return res.json(msg);
-        connection.release();
       })
     })
+    connection.release();
   })
 })
 
