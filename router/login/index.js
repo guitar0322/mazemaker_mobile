@@ -7,7 +7,7 @@ router.post('/',function(req,res){
   console.log(req.body);
   pool.getConnection((err, connection)=> {
     var sql = 'select * from user where username = ?';
-	var version = "1.1.8";
+	var version = "1.2.0";
     connection.query(sql,[req.body.username],function(err,result){
       if(err){
         connection.release();

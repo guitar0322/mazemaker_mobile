@@ -70,3 +70,82 @@ match_request_msg :  { '호짜':
      room: 10,
      socket_id: 'hFtNw8wB0IedWQroAAAA' } } 10 0
 match_cancel :  호짜 1007
+Connected 8080 port!
+Socket IO server listening on port 8088
+[Object: null prototype] { username: '113841336824747628220' }
+{ status: 'FIRST', version: '1.1.9' } '113841336824747628220'
+In register :  [Object: null prototype] { username: '113841336824747628220', nickname: '그냥해보기' }
+tutorial complete :  그냥해보기
+turorial conplete :  { status: 'COMPLETE' }
+ticket input :  5 그냥해보기
+match_socket_connect:  TiPu1txzxkZa5wmUAAAA
+ticket input :  5 그냥해보기
+ingame disconnect in :  TiPu1txzxkZa5wmUAAAA
+main disconnect in :  TiPu1txzxkZa5wmUAAAA
+[Object: null prototype] { username: 'a_8120060068665213250' }
+{ status: 'FIRST', version: '1.1.9' } 'a_8120060068665213250'
+In register :  [Object: null prototype] { username: 'a_8120060068665213250', nickname: '졍이' }
+tutorial complete :  졍이
+turorial conplete :  { status: 'COMPLETE' }
+ticket input :  5 졍이
+match_socket_connect:  ua6A3FwfrR57FHzqAAAB
+ticket input :  5 졍이
+ingame disconnect in :  ua6A3FwfrR57FHzqAAAB
+main disconnect in :  ua6A3FwfrR57FHzqAAAB
+[Object: null prototype] { username: 'a_4217648873326369615' }
+{ status: 'OK',
+  nickname: 'ㄴ',
+  win: 0,
+  loss: 0,
+  league: 1050,
+  ticketchangedtime: '2019-05-09 19:20:44',
+  ticket: 5,
+  tutorial: 1,
+  version: '1.1.9' }
+ticket input :  5 ㄴ
+match_socket_connect:  ixm1vc18WaTAZ01IAAAC
+ticket input :  5 ㄴ
+ingame disconnect in :  ixm1vc18WaTAZ01IAAAC
+main disconnect in :  ixm1vc18WaTAZ01IAAAC
+[Object: null prototype] { username: 'a_4217648873326369615' }
+{ status: 'OK',
+  nickname: 'ㄴ',
+  win: 0,
+  loss: 0,
+  league: 1050,
+  ticketchangedtime: '2019-05-10 03:56:15',
+  ticket: 5,
+  tutorial: 1,
+  version: '1.1.9' }
+ticket input :  5 ㄴ
+match_socket_connect:  kr-bat391nRu0c_uAAAD
+ticket input :  5 ㄴ
+ticket input :  5 ㄴ
+1 5 29.34 ㄴ
+ticket input :  5 ㄴ
+ingame disconnect in :  kr-bat391nRu0c_uAAAD
+main disconnect in :  kr-bat391nRu0c_uAAAD
+match_socket_connect:  7UCTtnWls0VX14pNAAAE
+1 6 29.34 ㄴ
+ticket input :  5 ㄴ
+ticket input :  5 ㄴ
+2 3 14.12 ㄴ
+ticket input :  5 ㄴ
+ticket input :  5 ㄴ
+ingame disconnect in :  7UCTtnWls0VX14pNAAAE
+main disconnect in :  7UCTtnWls0VX14pNAAAE
+[Object: null prototype] { username: 'g15952799551929908254' }
+{ status: 'OK',
+  nickname: '호짜',
+  win: 11,
+  loss: 7,
+  league: 1047,
+  ticketchangedtime: '2019-05-10 00:18:44',
+  ticket: 5,
+  tutorial: 1,
+  version: '1.1.9' }
+ticket input :  5 호짜
+match_socket_connect:  agd6r8Q0DuRfj1W9AAAF
+rank request...
+ingame disconnect in :  agd6r8Q0DuRfj1W9AAAF
+main disconnect in :  agd6r8Q0DuRfj1W9AAAF
