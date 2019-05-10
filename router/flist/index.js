@@ -1,10 +1,10 @@
 var router = require('express').Router();
 var pool = require('../../config/db')
 
-router.post('/', function(req, res) {
-  var sql = "select * from Friend where sender = ? and relation = 1";
+router.get('/', function(req, res) {
+  var sql = "select * from Friend where (sender = ? and relation = 1) or (receiver = ? and relation = 1)";
   pool.getConnection((err, connection) => {
-    connection.query(sql, req.body.nickname, function(err, result) {
+    connection.query(sql, [req.query.nickname, req.query.nickname], function(err, result) {
       if (err) {
 				connection.release();
 				throw err
@@ -16,8 +16,8 @@ router.post('/', function(req, res) {
       else {
         var sql = `select u.nickname, u.status
         from Friend as f, user as u
-        where f.receiver=u.nickname and f.sender=? and f.relation = 1;`
-        connection.query(sql, req.body.nickname, function(err, result) {
+        where (f.receiver=u.nickname and f.sender=? and f.relation=1) or (f.sender=u.nickname and f.receiver=? and f.relation=1);`
+        connection.query(sql, [req.query.nickname, req.query.nickname], function(err, result) {
           if(err) {
             connection.release();
             throw err;
