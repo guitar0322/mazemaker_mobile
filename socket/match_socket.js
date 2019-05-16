@@ -135,16 +135,16 @@ module.exports = function(io) {
     })
 
     socket.on('disconnect', function() {
-      console.log("main disconnect in : ", socket.id);
-      if (socket_nick[socket.id].room != undefined) {
-        var room = socket_nick[socket.id].room;
-        console.log("delete", socket_nick[socket.id].nickname, "in", room);
-        var room_idx1 = room % 100;
-        var room_idx2 = Math.floor(room / 100, 0);
-        socket.leave(room);
-        delete matches[room_idx1][room_idx2][socket_nick[socket.id].nickname];
-        // delete socket_nick[socket.id];
-      }
+      console.log("main disconnect in : ", Object.keys(socket_nick[socket.id]).length);
+      // if (socket_nick[socket.id].room != undefined) {
+      //   var room = socket_nick[socket.id].room;
+      //   console.log("delete", socket_nick[socket.id].nickname, "in", room);
+      //   var room_idx1 = room % 100;
+      //   var room_idx2 = Math.floor(room / 100, 0);
+      //   socket.leave(room);
+      //   delete matches[room_idx1][room_idx2][socket_nick[socket.id].nickname];
+      //   // delete socket_nick[socket.id];
+      // }
     })
 
     socket.on('match', function(data) {
