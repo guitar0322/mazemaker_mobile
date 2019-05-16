@@ -12,11 +12,8 @@ var addFriend = require('./addFriend/index');
 var delFriend = require('./delFriend/index');
 var acceptFriend = require('./acceptFriend/index');
 var flist = require("./flist/index");
-<<<<<<< HEAD
 var notice = require("./notice/index");
-=======
 var reqlist = require("./reqlist/index");
->>>>>>> f4dc41e4cad26532674148d394e438a7e390dbd1
 
 router.use('/register',register);
 router.use('/login',login);
@@ -31,10 +28,7 @@ router.use('/addFriend', addFriend);
 router.use('/delFriend', delFriend);
 router.use('/acceptFriend', acceptFriend);
 router.use('/flist', flist);
-<<<<<<< HEAD
 router.use('/notice', notice);
-=======
 router.use('/reqlist', reqlist);
->>>>>>> f4dc41e4cad26532674148d394e438a7e390dbd1
 
 module.exports = router;
