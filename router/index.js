@@ -10,6 +10,7 @@ var stage = require('./stage/index');
 var search = require('./search/index');
 var addFriend = require('./addFriend/index');
 var flist = require("./flist/index");
+var notice = require("./notice/index");
 
 router.use('/register',register);
 router.use('/login',login);
@@ -22,5 +23,6 @@ router.use('/stage', stage);
 router.use('/search', search);
 router.use('/addFriend', addFriend);
 router.use('/flist', flist);
+router.use('/notice', notice);
 
 module.exports = router;

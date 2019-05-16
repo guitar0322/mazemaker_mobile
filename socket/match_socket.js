@@ -126,9 +126,6 @@ module.exports = function(io) {
 			delete socket_nick[socket.id];
 		}
 	})
-			
-			
-
 
     socket.on('match', function(data){
       var match_request_msg = {"match_request":"COMPLETE"};
@@ -136,22 +133,20 @@ module.exports = function(io) {
       var nickname = jsonData.nickname;
       var score = jsonData.rankscore;
       var room_idx = Math.floor(score/100, 0);
-      var tmp = 0;
+      var room_idx2 = 0;
       var room = 0;
       var flag = 0;
 
-  //    console.log("match_start : ", nickname, score);
-
       if(matches[room_idx] === undefined) {
         matches[room_idx] = {};
-        matches[room_idx][tmp] = {};
-        matches[room_idx][tmp][nickname] = {};
+        matches[room_idx][room_idx2] = {};
+        matches[room_idx][room_idx2][nickname] = {};
       }
       else {
         for(var i = 0; i < 10000; i++) {
           if(matches[room_idx][i] != undefined) {
             if(Object.keys(matches[room_idx][i]).length != MAX_USER) {
-              tmp = i;
+              room_idx2 = i;
               flag = 1;
               break;
             }
@@ -160,27 +155,28 @@ module.exports = function(io) {
         if(flag === 0) {
           for(var i = 0; i < 10000; i++) {
             if(matches[room_idx][i] === undefined) {
-              tmp = i;
-              matches[room_idx][tmp] = {};
+              room_idx2 = i;
+              matches[room_idx][room_idx2] = {};
               break;
             }
           }
         }
-        matches[room_idx][tmp][nickname] = {};
+        matches[room_idx][room_idx2][nickname] = {};
       }
-      room = tmp*100+room_idx; // 방번호 계산부분
+      room = room_idx2*100+room_idx; // 방번호 계산부분
+      console.log("match_request : ", nickname, score, room);
       socket.join(room); //클라 해당 방번호에 join
 
-      matches[room_idx][tmp][nickname] = {"nickname":nickname, "rankscore":score, "room":room, "socket_id":socket.id};
+      matches[room_idx][room_idx2][nickname] = {"nickname":nickname, "rankscore":score, "room":room, "socket_id":socket.id};
       socket_nick[socket.id] = {};
       socket_nick[socket.id] = {"nickname":nickname, "room":room};
 
       io.to(socket.id).emit('match_request', match_request_msg);
 
-      console.log("match_request_msg : ",matches[room_idx][tmp], room, tmp);
+      //console.log("match_request_msg : ",matches[room_idx][room_idx2], room, tmp);
 
-      if(Object.keys(matches[room_idx][tmp]).length === MAX_USER) {
-        var matchData = matches[room_idx][tmp];
+      if(Object.keys(matches[room_idx][room_idx2]).length === MAX_USER) {
+        var matchData = matches[room_idx][room_idx2];
         var msg = {"complete":"COMPLETE", "info":matchData};
         console.log('match_complete : ', msg);
         io.sockets.in(room).emit('match_complete', msg);
@@ -190,24 +186,6 @@ module.exports = function(io) {
 		  delete socket_nick[user_socket_id];
 		}
       }
-      /*matches[idx][nickname] = {"nickname":nickname, "rankscore":score, "room":idx};
-      if(Object.key(matches[idx]).length===2){
-        var matchData = matches[idx];
-        var msg = {"complete":"COMPLETE", "info":matchData};
-        io.sockets.in(idx).emit('match_complete',msg);
-      }*/
-        //1 비슷한 점수대 애들 있는 지 확인
-        //2 비슷한 점수대 애들이 없는 경우
-          //2-1 디비에 추가 및 소켓에도 추가 후 error 송신
-        //3 비슷한 점수대 애들이 있는 경우
-          //3-1 3명인 경우
-            //3-1-1 디비상에 클라 추가
-            //3-1-2 소켓에도 추가
-            //3-1-3 해당 소켓에 있는 클라들에게 정보 송신
-          //3-2 그 미만의경우
-            //3-2-1 디비상에 추가
-            //3-2-2 해당 클라 소켓에 추가
-            //3-2-3 소켓에 있는 클라들에게 error 송신
     });
   });
 }
