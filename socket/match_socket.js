@@ -119,20 +119,6 @@ module.exports = function(io) {
       }
     })
 
-<<<<<<< HEAD
-	socket.on('disconnect', function(){
-		console.log("main disconnect in : ", socket.id);
-		if(socket_nick[socket.id] != undefined){
-			var room = socket_nick[socket.id].room;
-			console.log("delete",socket_nick[socket.id].nickname, "in", room);
-			var room_idx1 = room % 100;
-			var room_idx2 = Math.floor(room/100, 0);
-			socket.leave(room);
-			delete matches[room_idx1][room_idx2][socket_nick[socket.id].nickname];
-			delete socket_nick[socket.id];
-		}
-	})
-=======
     socket.on('disconnect', function(){
       console.log("main disconnect in : ", socket.id);
       if(socket_nick[socket.id] != undefined){
@@ -146,10 +132,6 @@ module.exports = function(io) {
       }
     })
 
-
-
->>>>>>> f4dc41e4cad26532674148d394e438a7e390dbd1
-
     socket.on('match', function(data){
       var match_request_msg = {"match_request":"COMPLETE"};
       var jsonData = JSON.parse(data);
@@ -160,11 +142,6 @@ module.exports = function(io) {
       var room = 0;
       var flag = 0;
 
-<<<<<<< HEAD
-=======
-      //    console.log("match_start : ", nickname, score);
-
->>>>>>> f4dc41e4cad26532674148d394e438a7e390dbd1
       if(matches[room_idx] === undefined) {
         matches[room_idx] = {};
         matches[room_idx][room_idx2] = {};
@@ -195,15 +172,10 @@ module.exports = function(io) {
       console.log("match_request : ", nickname, score, room);
       socket.join(room); //클라 해당 방번호에 join
 
-<<<<<<< HEAD
+
       matches[room_idx][room_idx2][nickname] = {"nickname":nickname, "rankscore":score, "room":room, "socket_id":socket.id};
       socket_nick[socket.id] = {};
-=======
-      matches[room_idx][tmp][nickname] = {"nickname":nickname, "rankscore":score, "room":room, "socket_id":socket.id};
-      //socket_nick[socket.id] = {};
->>>>>>> f4dc41e4cad26532674148d394e438a7e390dbd1
       socket_nick[socket.id] = {"nickname":nickname, "room":room};
-
       io.to(socket.id).emit('match_request', match_request_msg);
 
       //console.log("match_request_msg : ",matches[room_idx][room_idx2], room, tmp);
@@ -219,28 +191,7 @@ module.exports = function(io) {
           delete socket_nick[user_socket_id];
         }
       }
-<<<<<<< HEAD
     });
-=======
-      /*matches[idx][nickname] = {"nickname":nickname, "rankscore":score, "room":idx};
-      if(Object.key(matches[idx]).length===2){
-      var matchData = matches[idx];
-      var msg = {"complete":"COMPLETE", "info":matchData};
-      io.sockets.in(idx).emit('match_complete',msg);
-    }*/
-    //1 비슷한 점수대 애들 있는 지 확인
-    //2 비슷한 점수대 애들이 없는 경우
-    //2-1 디비에 추가 및 소켓에도 추가 후 error 송신
-    //3 비슷한 점수대 애들이 있는 경우
-    //3-1 3명인 경우
-    //3-1-1 디비상에 클라 추가
-    //3-1-2 소켓에도 추가
-    //3-1-3 해당 소켓에 있는 클라들에게 정보 송신
-    //3-2 그 미만의경우
-    //3-2-1 디비상에 추가
-    //3-2-2 해당 클라 소켓에 추가
-    //3-2-3 소켓에 있는 클라들에게 error 송신
->>>>>>> f4dc41e4cad26532674148d394e438a7e390dbd1
   });
 });
 }
