@@ -191,7 +191,6 @@ module.exports = function(io) {
           delete socket_nick[user_socket_id];
         }
       }
-    });
   });
 });
 }
