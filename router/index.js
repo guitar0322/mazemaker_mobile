@@ -9,7 +9,10 @@ var single = require('./single/index');
 var stage = require('./stage/index');
 var search = require('./search/index');
 var addFriend = require('./addFriend/index');
+var delFriend = require('./delFriend/index');
+var acceptFriend = require('./acceptFriend/index');
 var flist = require("./flist/index");
+var reqlist = require("./reqlist/index");
 
 router.use('/register',register);
 router.use('/login',login);
@@ -21,6 +24,9 @@ router.use('/single',single);
 router.use('/stage', stage);
 router.use('/search', search);
 router.use('/addFriend', addFriend);
+router.use('/delFriend', delFriend);
+router.use('/acceptFriend', acceptFriend);
 router.use('/flist', flist);
+router.use('/reqlist', reqlist);
 
 module.exports = router;
