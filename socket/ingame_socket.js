@@ -211,7 +211,7 @@ module.exports=function(io){
           break;
         }
     }
-
+    socket_nick[socket.id][0]["room"] = 0; //포기한 유저는 방번호 0으로 초기화
     delete rooms[roomNum]["socketID"][socket.id];
     user_cnt =rooms[roomNum]["count"]+Object.keys(rooms[roomNum]["giveuplist"]).length;
 
@@ -247,7 +247,6 @@ module.exports=function(io){
 					var room_idx = roomNum %100, room_idx2 = Math.floor(roomNum/100, 0);
 					console.log("BEFORE DELETE MATCHES : ", matches[room_idx][room_idx2]);
 					delete matches[room_idx][room_idx2];
-					delete socket_nick[socket.id];
 					console.log("AFTER DELETE MATCHES : ", matches[room_idx][room_idx2]);
           if(rooms[roomNum]!=undefined)
             delete rooms[roomNum];
@@ -368,11 +367,13 @@ module.exports=function(io){
       connection.release();
     })
 		var room_idx = roomNum %100, room_idx2 = Math.floor(roomNum/100, 0);
-		console.log("BEFORE DELETE MATCHES : ", matches[room_idx][room_idx2]);
-		delete matches[room_idx][room_idx2];
-		delete socket_nick[socket.id];
-		console.log("AFTER DELETE MATCHES : ", matches[room_idx][room_idx2]);
+    socket_nick[socket.id][0]["room"] = 0;
     socket.leave(roomNum);
+    if(matches[room_idx][room_idx2] != undefined) {
+      console.log("BEFORE DELETE MATCHES : ", matches[room_idx][room_idx2]);
+  		delete matches[room_idx][room_idx2];
+  		console.log("AFTER DELETE MATCHES : ", matches[room_idx][room_idx2]);
+    }
     if(rooms[roomNum] != undefined) {
       delete rooms[roomNum];
     }
@@ -443,9 +444,14 @@ module.exports=function(io){
             var roomData = [];
             var maze = "";
 			      var room_idx = roomNum %100, room_idx2 = Math.floor(roomNum/100, 0);
-			      delete matches[room_idx][room_idx2];
-			      delete socket_nick[socket.id];
-          	if(rooms[roomNum]!=undefined)
+            if(matches[room_idx][room_idx2] !== undefined) {
+                delete matches[room_idx][room_idx2];
+            }
+			      // delete socket_nick[socket.id];
+            if(socket_nick[socket.id] !== undefined) {
+              delete socket_nick[socket.id];
+            }
+            if(rooms[roomNum]!=undefined)
             	delete rooms[roomNum];
           }
         }
