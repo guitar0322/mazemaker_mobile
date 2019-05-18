@@ -1,10 +1,10 @@
 var router = require('express').Router();
 var pool = require('../../config/db')
 
-router.get('/', function(req, res) {
-  var sql = "select * from Friend where (receiver = ? and relation = 1)";
+router.post('/', function(req, res) {
+  var sql = "select * from Friend where (receiver = ? and relation = 0)";
   pool.getConnection((err, connection) => {
-    connection.query(sql, [req.query.nickname], function(err, result) {
+    connection.query(sql, [req.body.nickname], function(err, result) {
       if (err) {
 				connection.release();
 				throw err
@@ -17,10 +17,10 @@ router.get('/', function(req, res) {
         var f_list = [];
 
         for(var i in result) {
-          f_list.push({"nickname":result[i].nickname});
+          f_list.push({"nickname":result[i].sender});
         }
         var msg = {"result":f_list};
-        res.json(msg);
+        return res.json(msg);
       }
     })
     connection.release();
