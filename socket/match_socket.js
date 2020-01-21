@@ -115,9 +115,9 @@ module.exports = function(io) {
 
       console.log("match_cancel : ", nickname, score);
 
-      socket_nick[socket.id][0]["room"] = 0;
-      // if (socket_nick[socket.id] != undefined)
-      //   delete socket_nick[socket.id];
+      //socket_nick[socket.id][0]["room"] = 0;
+       if (socket_nick[socket.id] != undefined)
+         delete socket_nick[socket.id];
 
       if (matches[room_idx][room_idx2][nickname].nickname === nickname && Object.keys(matches[room_idx][room_idx2]).length === 1) {
         delete matches[room_idx][room_idx2];
@@ -176,6 +176,8 @@ module.exports = function(io) {
       var room_idx2 = 0;
       var room = 0;
       var flag = 0;
+      socket_nick[socket.id] = [];
+      socket_nick[socket.id].push({"nickname":nickname, "room":0});
 
       if (matches[room_idx] === undefined) {
         matches[room_idx] = {};

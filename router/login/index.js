@@ -2,11 +2,11 @@ var bkfd2Password = require("pbkdf2-password");
 var hasher = bkfd2Password();
 var router = require('express').Router();
 var pool = require('../../config/db')
-
 router.post('/',function(req,res){
+  console.log('hello');
   pool.getConnection((err, connection)=> {
     var sql = 'select * from user where username = ?';
-	var version = "1.2.2";
+	var version = "1.2.4";
     connection.query(sql,[req.body.username],function(err,result){
       if(err){
         connection.release();

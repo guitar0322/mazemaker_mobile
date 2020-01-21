@@ -45,7 +45,7 @@ router.post('/',function(req,res){
             var last_date = result[0].last_date;
             var ticket = result[0].ticket;
             var tutorial = result[0].tutorial;
-			var stage = result[0].stage;
+		var stage = result[0].stage;
 
             var msg = {"status":"OK", "win":win, "loss":loss, "league":league, "ticketchangedtime":last_date, "ticket":ticket, "tutorial":tutorial, "stage":stage}
             return res.json(msg);

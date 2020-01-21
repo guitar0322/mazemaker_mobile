@@ -3,7 +3,7 @@ var pool = mysql.createPool({
   host:'localhost',
   port:3306,
   user:'root',
-  password:'!Q2w3e4r',
+  password:'1234',
   database:'miro',
   dateStrings: 'date',
   connectionLimit : 50

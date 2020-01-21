@@ -1,0 +1,31 @@
+{
+  "name": "maze",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "date-utils": "^1.2.21",
+    "express": "4.17.1",
+    "express-mysql-session": "^2.1.0",
+    "express-session": "^1.15.6",
+    "jade": "^1.11.0",
+    "orm-timestamps": "^0.5.2",
+    "pbkdf2-password": "^1.2.1",
+    "socket.io": "1.7.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Minuuu/maze.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Minuuu/maze/issues"
+  },
+  "homepage": "https://github.com/Minuuu/maze#readme"
+}
